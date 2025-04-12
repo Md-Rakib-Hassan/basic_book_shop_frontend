@@ -1,0 +1,28 @@
+.swiper-button-prev,.swiper-button-next{
+background-color: rgb(255, 255, 255);
+
+padding: 1.50rem;
+border-radius: 50%;
+box-shadow: 1px 1px 10px rgba(0, 0, 0,0.3);
+
+}
+
+.bookSwiper .swiper-button-prev, .bookSwiper .swiper-button-next{
+    top: 108px;
+}
+
+.bookSwiper .swiper-button-prev{
+    position: absolute;
+    left: 0rem;
+   
+}
+.bookSwiper .swiper-button-next{
+    position: absolute;
+    right: 0rem;
+   
+}
+
+.swiper-button-prev::after, .swiper-button-next::after{
+    font-size: 1.25rem;
+    }
+
