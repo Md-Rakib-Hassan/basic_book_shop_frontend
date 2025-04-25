@@ -1,5 +1,6 @@
 import {
     createBrowserRouter,
+    Navigate,
   } from "react-router";
 import App from "../App";
 import Books from "../pages/Books";
@@ -15,7 +16,16 @@ import Checkout from "../pages/Checkout";
 import NotFound from "../pages/NotFound";
 import ProtectedRoute from "./ProtectedRoute";
 import AuthLayout from "../pages/auth/AuthLayout";
-import DashboardLayout from "../pages/dashboard/DashboardLayout";
+import DashboardLayout from "../components/layouts/DashboardLayout";
+import ChangePassword from "../pages/dashboard/user/ChangePassword";
+import UserProfile from "../pages/dashboard/user/UserProfile";
+import ManageOrders from "../pages/dashboard/admin/ManageOrders";
+import EditBook from "../pages/dashboard/admin/EditBook";
+import AddBook from "../pages/dashboard/admin/AddBook";
+import ManageBooks from "../pages/dashboard/admin/ManageBooks";
+import ManageUsers from "../pages/dashboard/admin/ManageUsers";
+import AdminDashboard from "../pages/dashboard/admin/AdminDashboard";
+
 
 
   
@@ -25,38 +35,33 @@ import DashboardLayout from "../pages/dashboard/DashboardLayout";
     {
       path: "/",
       element: <App />,
-          errorElement:<NotFound></NotFound>,
-          children: [
-              {
-                  index: true,
-                    element:<Index></Index>       
-          },
-            {
-                path: '/books',
-                element:<Books></Books>
-            }, {
-              path: '/books/:bookId',
-              element:<Book></Book>
-            },
-            {
-              path: '/about',
-              element:<AboutUs></AboutUs>
-            },
-            {
-              path: '/contact',
-              element:<ContactUs></ContactUs>
-            },
-            {
-              path: '/faq',
-              element:<Faq></Faq>
-            },
-            {
-              path: '/checkout:bookId',
-              element:<Checkout></Checkout>
-            },
-            
-            
-      ]
+      errorElement: <NotFound></NotFound>,
+      children: [
+        {
+          index: true,
+          element: <Index></Index>,
+        },
+        {
+          path: "/books",
+          element: <Books></Books>,
+        },
+        {
+          path: "/books/:bookId",
+          element: <Book></Book>,
+        },
+        {
+          path: "/about",
+          element: <AboutUs></AboutUs>,
+        },
+        {
+          path: "/contact",
+          element: <ContactUs></ContactUs>,
+        },
+        {
+          path: "/faq",
+          element: <Faq></Faq>,
+        },
+      ],
     },
     {
       path: "/auth",
@@ -70,17 +75,53 @@ import DashboardLayout from "../pages/dashboard/DashboardLayout";
           index: true,
           path: "login",
           element: <Login />,
-        }
-      ]
+        },
+      ],
     },
     {
-      path:'/dashboard',
-      element: <ProtectedRoute><DashboardLayout></DashboardLayout></ProtectedRoute>,
+      path: "/dashboard",
+      element: <DashboardLayout />,
       children: [
         
-      ]
-    }
-      
+        {
+          index: true,
+          element: <AdminDashboard  />,
+        },
+        {
+          path: "users",
+          element: <ManageUsers />,
+        },
+        {
+          path: "books",
+          element: <ManageBooks />,
+        },
+        {
+          path: "books/add",
+          element: <AddBook />,
+        },
+        {
+          path: "books/edit/:id",
+          element: <EditBook />,
+        },
+        {
+          path: "orders",
+          element: <ManageOrders />,
+        },
+        {
+          path: "profile",
+          element: <UserProfile />,
+        },
+        
+        {
+          path: "change-password",
+          element: <ChangePassword />,
+        },
+        {
+          path: "*",
+          element: <Navigate to="/" />,
+        },
+      ],
+    },
   ]);
 
   export default router;

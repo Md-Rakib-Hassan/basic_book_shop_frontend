@@ -25,7 +25,7 @@ interface CheckoutProps {
   user: User;
 }
 
-const Checkout = () => {
+const Checkout = ({book,user}) => {
     
     const params = useParams();
       
@@ -123,7 +123,7 @@ const Checkout = () => {
         </div>
       </div>
 
-      {/* SurjoPay Placeholder */}
+ 
       {paymentMethod === 'Mobile Banking' && (
         <p className="text-sm text-gray-500 text-center mt-4">
           You will be redirected to SurjoPay after clicking "Order Now".

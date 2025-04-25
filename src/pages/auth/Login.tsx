@@ -1,16 +1,19 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useLoginMutation } from "../../redux/features/auth/authApi";
 import { useAppDispatch } from "../../redux/hooks";
 import { setUser } from "../../redux/features/auth/authSlice";
 import { verifyToken } from "../../utils/verifyToken";
+import { toast } from "sonner";
 
 
 const Login: React.FC = () => {
     const [credentials, setCredentials] = useState({ Email: "", Password: "" });
     
-    const [login, { data, isLoading, isError }] = useLoginMutation();
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [login] = useLoginMutation();
+  const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -22,12 +25,15 @@ const Login: React.FC = () => {
     e.preventDefault();
       //   console.log("Login Credentials:", credentials);
       
-      const res= await login(credentials).unwrap();
+    const res = await login(credentials).unwrap();
+    console.log(res);
       
     if (res) {
       const user = verifyToken(res?.data?.token);
         dispatch(setUser({user, token: res?.data?.token}));
-      }
+    }
+    toast.success("Login successful!");
+        navigate("/");
     };
     
     
@@ -43,7 +49,7 @@ const Login: React.FC = () => {
             transition={{ duration: 0.6 }}
           >
             <img
-              src="./images/Login_ill.jpg"
+              src="/images/Login_ill.jpg"
               alt="Login Illustration"
               className="h-full rounded-l-xl"
             />

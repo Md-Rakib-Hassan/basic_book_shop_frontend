@@ -19,9 +19,7 @@ const Banner = () => {
   if (isLoading) {
     return <div>Loading...</div>;
   }
-  if (isError) { 
-    return <div>Error: {error}</div>;
-  }
+  
     return (
       <div>
         <div>

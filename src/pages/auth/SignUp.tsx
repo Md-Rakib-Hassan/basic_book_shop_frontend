@@ -75,15 +75,15 @@ const SignUp: React.FC = () => {
     <div className="bg-white rounded-2xl shadow-2xl grid grid-cols-1 md:grid-cols-2 w-full max-w-5xl overflow-hidden">
       {/* Image / Animation Side */}
       <motion.div
-        className="hidden md:flex items-center justify-center bg-blue-100 p-8"
+        className="hidden md:flex items-center justify-center bg-blue-100"
         initial={{ opacity: 0, x: -50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6 }}
       >
         <img
-          src="https://source.unsplash.com/500x500/?signup,technology"
+          src="/images/SignUp_ill.jpg"
           alt="Signup Illustration"
-          className="object-cover rounded-xl"
+          className="object-cover rounded-l-xl h-full"
         />
       </motion.div>
 
