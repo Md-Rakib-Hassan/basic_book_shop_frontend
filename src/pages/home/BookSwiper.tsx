@@ -1,10 +1,10 @@
 import React, { FC } from 'react';
-import { useGetBookQuery } from '../../redux/features/books/bookApi';
 import BookCard from '../../components/BookCard';
 import { IBook } from '../../types/book';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 // Import Swiper styles
+
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';

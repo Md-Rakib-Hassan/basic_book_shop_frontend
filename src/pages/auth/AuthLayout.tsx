@@ -1,7 +1,7 @@
 import React from "react";
 import { IoChevronBackOutline } from "react-icons/io5";
 import { Link, Outlet } from "react-router";
-import { Toaster, toast } from "sonner";
+import { Toaster,  } from "sonner";
 
 const AuthLayout = () => {
   return (

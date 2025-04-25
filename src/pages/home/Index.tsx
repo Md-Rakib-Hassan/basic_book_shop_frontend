@@ -1,3 +1,6 @@
+import CustomerReview from "../../components/CustomerReview";
+import NewsLater from "../../components/NewsLater";
+import WhyUs from "../../components/WhyUs";
 import { useGetBookQuery } from "../../redux/features/books/bookApi";
 import LoadingPage from "../LoadingPage";
 import Banner from "./Banner";
@@ -16,8 +19,11 @@ const Index = () => {
       <div className="w-[80%] mx-auto">
         <BookSwiper data={data} title="Current Bestseller" types="bestSeller" key={'best1'}></BookSwiper>
         <BookSwiper data={data} title="Top Rated Books" types="topRated" key={'top'}></BookSwiper>
-        <BookSwiper data={data} title="" types="limitedOffer" key={'offer'}></BookSwiper>
-        <Testimonial></Testimonial>
+          <BookSwiper data={data} title="" types="limitedOffer" key={'offer'}></BookSwiper>
+          <WhyUs></WhyUs>
+          {/* <Testimonial></Testimonial> */}
+          <CustomerReview></CustomerReview>
+          <NewsLater></NewsLater>
       </div>
         </div>
     );

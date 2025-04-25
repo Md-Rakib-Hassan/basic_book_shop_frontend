@@ -4,7 +4,7 @@ import { useGetBookQuery } from '../redux/features/books/bookApi';
 import BookCard from '../components/BookCard';
 
 const Books = () => {
-    const { params, setParams } = useState([]);
+    const [params, setParams] = useState([]);
     const { isLoading, currentData } = useGetBookQuery(params);
     if (isLoading) return <LoadingPage></LoadingPage>
 
