@@ -1,134 +1,291 @@
-import { useState } from 'react';
+import React, {  useState } from 'react';
 import { motion } from 'framer-motion';
-import { useNavigate, useParams } from 'react-router';
 import { toast } from 'sonner';
-import axios from 'axios';
+import {  Truck, ShoppingBag, Book } from 'lucide-react';
+import { useNavigate, useParams, useSearchParams } from 'react-router';
+import { useGetSpecificBookQuery } from '../redux/features/books/bookApi';
+import LoadingPage from './LoadingPage';
+import { useCreateOrderMutation } from '../redux/features/order/orderApi';
+import { useInitPaymentMutation } from '../redux/features/payment/paymentApi';
 
-interface Book {
-  _id: string;
-  Title: string;
-  Price: number;
-  StockQuantity: number;
-  ImageUrl: string;
+interface CheckoutFormData {
+  shippingAddress: {
+    fullName: string;
+    addressLine1: string;
+    addressLine2: string;
+    city: string;
+    state: string;
+    zipCode: string;
+    country: string;
+    phone: string;
+  };
 }
 
-interface User {
-  _id: string;
-  Name: string;
-  Email: string;
-  Address: string;
-  Phone: string;
-}
-
-interface CheckoutProps {
-  book: Book;
-  user: User;
-}
-
-const Checkout = ({book,user}) => {
-    
-    const params = useParams();
-      
-  const [quantity, setQuantity] = useState(1);
-  const [paymentMethod, setPaymentMethod] = useState<'Mobile Banking' | 'Cash on Delivery'>('Mobile Banking');
+const Checkout: React.FC = () => {
   const navigate = useNavigate();
+  const { bookId } = useParams();
+  const [searchParams] = useSearchParams();
+  const [formData, setFormData] = useState<CheckoutFormData>({
+    shippingAddress: {
+      fullName: '',
+      addressLine1: '',
+      addressLine2: '',
+      city: '',
+      state: '',
+      zipCode: '',
+      phone: '',
+    },
+  });
+  const qty = parseInt(searchParams.get('qty'));
 
-  const total = +(book.Price * quantity).toFixed(2);
+  const { isLoading: bookLoading, currentData: book } = useGetSpecificBookQuery(bookId);
+  const [createOrder,{isSuccess,isError, isLoading:orderLoading}] = useCreateOrderMutation();
+    const [initPayment] = useInitPaymentMutation();
+  
+  if (bookLoading) return <LoadingPage />;
 
-  const handleOrder = async () => {
-    if (quantity > book.StockQuantity) {
-      return toast.error('Quantity exceeds available stock.');
+
+  // const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const shippingCost = 5.99;
+  const subtotal = parseFloat(book?.data?.Price) * parseInt(qty);
+  const total = subtotal + shippingCost;
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const [section, field] = e.target.name.split('.');
+    setFormData(prev => ({
+      ...prev,
+      [section]: {
+        ...prev[section as keyof CheckoutFormData],
+        [field]: e.target.value,
+      },
+    }));
+  };
+
+
+
+
+  const handleSubmit = async(e: React.FormEvent) => {
+    e.preventDefault();
+    const BookDetails= [
+      {
+        BookId: book?.data?._id,
+        Quantity: qty,
+      }]
+    const CustomerDetails = {
+      Name: formData.shippingAddress.fullName,
+      Address: formData.shippingAddress.addressLine1+' '+formData.shippingAddress.addressLine2,
+      City: formData.shippingAddress.city,
+      State: formData.shippingAddress.state,
+      ZIPCode: formData.shippingAddress.zipCode,
+      Country: formData.shippingAddress.country,
+      Phone: formData.shippingAddress.phone,
+    };
+    // Log the checkout data
+    // console.log('Checkout form submitted with data:', {
+    //   ...formData,
+    // });
+    const orderData = {
+      CustomerDetails,
+      BookDetails,
     }
+    console.log(orderData);
 
     try {
-      const orderPayload = {
-        UserId: user._id,
-        BookDetails: [{ BookId: book._id, Quantity: quantity }],
-        PaymentMethod: paymentMethod,
-        SubTotal: total,
-        Total: total,
-      };
-
-      const { data } = await axios.post('/api/orders', orderPayload); // update with your backend route
-      toast.success('Order placed successfully!');
-      navigate('/dashboard/orders'); // redirect to user's order page
+      const response = await initPayment(orderData).unwrap();
+      console.log("Payment initialized:", response);
+      window.location.replace(response?.url);
     } catch (error) {
-      toast.error('Something went wrong while placing order.');
+      console.error("Error initializing payment:", error);
     }
+
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
-      <motion.h2
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-2xl font-bold text-center mb-6 text-[#1b8bcb]"
-      >
-        Checkout
-      </motion.h2>
-
-      <div className="grid md:grid-cols-2 gap-6 bg-white p-6 rounded-xl shadow-lg">
-        {/* Book Details */}
-        <div>
-          <img src={book.ImageUrl} alt={book.Title} className="w-full h-60 object-cover rounded" />
-          <h3 className="mt-4 text-xl font-semibold">{book.Title}</h3>
-          <p className="text-gray-600">Price: ${book.Price}</p>
-          <p className="text-gray-600">Stock: {book.StockQuantity}</p>
-
-          <label className="block mt-4">
-            <span className="text-gray-700">Quantity</span>
-            <input
-              type="number"
-              value={quantity}
-              min={1}
-              max={book.StockQuantity}
-              onChange={(e) => setQuantity(Number(e.target.value))}
-              className="mt-1 block w-full rounded border-gray-300 shadow-sm"
-            />
-          </label>
+    <div className=" bg-gray-50 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center mb-8">
+          <ShoppingBag className="h-8 w-8 text-primary-600 mr-3" />
+          <h1 className="text-3xl font-bold text-gray-900">Checkout</h1>
         </div>
 
-        {/* User & Payment Details */}
-        <div>
-          <h4 className="text-lg font-medium mb-2">Shipping Info</h4>
-          <p><span className="font-semibold">Name:</span> {user.Name}</p>
-          <p><span className="font-semibold">Email:</span> {user.Email}</p>
-          <p><span className="font-semibold">Address:</span> {user.Address}</p>
-          <p><span className="font-semibold">Phone:</span> {user.Phone}</p>
-
-          <div className="mt-4">
-            <label className="text-gray-700 block mb-1">Payment Method</label>
-            <select
-              value={paymentMethod}
-              onChange={(e) => setPaymentMethod(e.target.value as any)}
-              className="w-full border border-gray-300 rounded shadow-sm"
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Form Section */}
+          <form id='checkout-form' onSubmit={handleSubmit} className="space-y-6">
+            {/* Shipping Information */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-white p-6 rounded-lg shadow-sm"
             >
-              <option value="Mobile Banking">Mobile Banking</option>
-              <option value="Cash on Delivery">Cash on Delivery</option>
-            </select>
-          </div>
+              <div className="flex items-center mb-4">
+                <Truck className="h-5 w-5 text-primary-600 mr-2" />
+                <h2 className="text-lg font-semibold text-gray-900">Shipping Information</h2>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="col-span-2">
+                  <label htmlFor="shippingAddress.fullName" className="form-label">Full Name</label>
+                  <input
+                    type="text"
+                    name="shippingAddress.fullName"
+                    value={formData.shippingAddress.fullName}
+                    onChange={handleInputChange}
+                    className="form-input"
+                    required
+                  />
+                </div>
+                
+                <div className="col-span-2">
+                  <label htmlFor="shippingAddress.addressLine1" className="form-label">Address Line 1</label>
+                  <input
+                    type="text"
+                    name="shippingAddress.addressLine1"
+                    value={formData.shippingAddress.addressLine1}
+                    onChange={handleInputChange}
+                    className="form-input"
+                    required
+                  />
+                </div>
+                
+                <div className="col-span-2">
+                  <label htmlFor="shippingAddress.addressLine2" className="form-label">Address Line 2</label>
+                  <input
+                    type="text"
+                    name="shippingAddress.addressLine2"
+                    value={formData.shippingAddress.addressLine2}
+                    onChange={handleInputChange}
+                    className="form-input"
+                  />
+                </div>
+                
+                <div>
+                  <label htmlFor="shippingAddress.city" className="form-label">City</label>
+                  <input
+                    type="text"
+                    name="shippingAddress.city"
+                    value={formData.shippingAddress.city}
+                    onChange={handleInputChange}
+                    className="form-input"
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <label htmlFor="shippingAddress.state" className="form-label">State</label>
+                  <input
+                    type="text"
+                    name="shippingAddress.state"
+                    value={formData.shippingAddress.state}
+                    onChange={handleInputChange}
+                    className="form-input"
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <label htmlFor="shippingAddress.zipCode" className="form-label">ZIP Code</label>
+                  <input
+                    type="text"
+                    name="shippingAddress.zipCode"
+                    value={formData.shippingAddress.zipCode}
+                    onChange={handleInputChange}
+                    className="form-input"
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <label htmlFor="shippingAddress.country" className="form-label">Country</label>
+                  <input
+                    type="text"
+                    name="shippingAddress.country"
+                    value={formData.shippingAddress.country}
+                    onChange={handleInputChange}
+                    className="form-input"
+                    required
+                  />
+                </div>
+                
+                <div className="col-span-2">
+                  <label htmlFor="shippingAddress.phone" className="form-label">Phone Number</label>
+                  <input
+                    type="tel"
+                    name="shippingAddress.phone"
+                    value={formData.shippingAddress.phone}
+                    onChange={handleInputChange}
+                    className="form-input"
+                    required
+                  />
+                </div>
+              </div>
+            </motion.div>
 
-          <p className="mt-4 text-lg font-semibold text-[#1b8bcb]">
-            Total: ${total}
-          </p>
 
-          <motion.button
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.95 }}
-            className="mt-6 bg-[#1b8bcb] text-white px-6 py-2 rounded w-full"
-            onClick={handleOrder}
+          </form>
+
+          {/* Order Summary */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="space-y-6"
           >
-            Order Now
-          </motion.button>
+            <div className="bg-white p-6 rounded-lg shadow-sm">
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">Order Summary</h2>
+              
+              <div className="space-y-4">
+                {[book?.data].map((item) => (
+                  <div key={item._id} className="flex items-center space-x-4">
+                    <img
+                      src={item.ImageUrl}
+                      alt={item.Title}
+                      className="h-20 w-16 object-cover rounded"
+                    />
+                    <div className="flex-1">
+                      <h3 className="font-medium text-gray-900">{item.Title}</h3>
+                      <p className="text-sm text-gray-500">by {item?.Author?.Name}</p>
+                      <p className="text-sm text-gray-500">Quantity: {qty}</p>
+                    </div>
+                    <p className="font-medium text-gray-900">৳{(item.Price).toFixed(2)}</p>
+                  </div>
+                ))}
+                
+                <div className="border-t border-gray-200 pt-4 space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-500">Subtotal</span>
+                    <span className="text-gray-900">৳{subtotal.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-500">Shipping</span>
+                    <span className="text-gray-900">৳{shippingCost.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between text-base font-medium">
+                    <span className="text-gray-900">Total</span>
+                    <span className="text-gray-900">৳{total.toFixed(2)}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+              
+            
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              type='submit'
+              form='checkout-form'
+              className="w-full btn btn-primary py-3"
+            >
+              Place Order
+            </motion.button>
+
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+              <p className="text-sm text-yellow-800">
+                By placing your order, you agree to our Terms of Service and Privacy Policy.
+                Your payment information is securely processed.
+              </p>
+            </div>
+          </motion.div>
         </div>
       </div>
-
- 
-      {paymentMethod === 'Mobile Banking' && (
-        <p className="text-sm text-gray-500 text-center mt-4">
-          You will be redirected to SurjoPay after clicking "Order Now".
-        </p>
-      )}
     </div>
   );
 };

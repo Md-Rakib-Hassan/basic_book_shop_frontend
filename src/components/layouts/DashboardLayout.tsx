@@ -3,13 +3,17 @@ import { Outlet } from 'react-router';
 import { motion, AnimatePresence } from 'framer-motion';
 import Sidebar from '../dashboard/Sidebar';
 import Header from '../dashboard/Header';
+import { useFullUser } from '../../redux/hooks/useUserByEmail';
+import LoadingPage from '../../pages/LoadingPage';
 
-interface DashboardLayoutProps {
-  userRole: 'admin' | 'user';
-}
 
-const DashboardLayout: React.FC<DashboardLayoutProps> = ({ userRole }) => {
+
+const DashboardLayout = () => {
+  const {user,isLoading} = useFullUser();
+  console.log(user);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  if(isLoading) return <LoadingPage></LoadingPage>
+  const userRole = user?.UserType;
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);

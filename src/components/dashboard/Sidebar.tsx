@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink } from 'react-router';
+import { Link, NavLink, useNavigate } from 'react-router';
 import { motion } from 'framer-motion';
 import { 
   BookOpen, 
@@ -11,6 +11,8 @@ import {
   Lock,
   LogOut
 } from 'lucide-react';
+import { logOut } from '../../redux/features/auth/authSlice';
+import { useAppDispatch } from '../../redux/hooks';
 
 interface SidebarProps {
   userRole: 'admin' | 'user';
@@ -19,11 +21,25 @@ interface SidebarProps {
 const linkClass = "flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-700 rounded-md transition-all duration-200";
 const activeLinkClass = "bg-primary-50 text-primary-700 font-medium";
 
+
+
+
 const Sidebar: React.FC<SidebarProps> = ({ userRole }) => {
+
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  
+  const onLogout = () => {
+  
+    dispatch(logOut());
+    navigate('/');
+
+  }
+
   return (
     <div className="flex flex-col h-full bg-white border-r border-gray-200">
       <div className="flex items-center justify-center h-16 px-4 border-b border-gray-200">
-        <motion.div 
+        <Link to={'/'}><motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
@@ -31,26 +47,27 @@ const Sidebar: React.FC<SidebarProps> = ({ userRole }) => {
         >
           <BookOpen className="w-8 h-8 text-primary-600" />
           <span className="text-xl font-bold text-primary-700">BookShop</span>
-        </motion.div>
+        </motion.div></Link>
       </div>
 
       <div className="flex-1 overflow-y-auto p-4">
         <nav className="space-y-1">
           {/* Common dashboard link */}
-          <NavLink
-            to="/dashboard"
+          
+
+          {/* Admin Links */}
+          {userRole === 'admin' && (
+            <>
+              <NavLink
+            to="/dashboard/admin"
             className={({ isActive }) => `${linkClass} ${isActive ? activeLinkClass : ''}`}
             end
           >
             <Home size={20} />
             <span>Dashboard</span>
           </NavLink>
-
-          {/* Admin Links */}
-          {userRole === 'admin' && (
-            <>
               <NavLink
-                to="/dashboard/users"
+                to="/dashboard/admin/users"
                 className={({ isActive }) => `${linkClass} ${isActive ? activeLinkClass : ''}`}
               >
                 <Users size={20} />
@@ -58,7 +75,7 @@ const Sidebar: React.FC<SidebarProps> = ({ userRole }) => {
               </NavLink>
 
               <NavLink
-                to="/dashboard/books"
+                to="/dashboard/admin/books"
                 className={({ isActive }) => `${linkClass} ${isActive ? activeLinkClass : ''}`}
               >
                 <Book size={20} />
@@ -66,7 +83,7 @@ const Sidebar: React.FC<SidebarProps> = ({ userRole }) => {
               </NavLink>
 
               <NavLink
-                to="/dashboard/orders"
+                to="/dashboard/admin/orders"
                 className={({ isActive }) => `${linkClass} ${isActive ? activeLinkClass : ''}`}
               >
                 <ShoppingCart size={20} />
@@ -77,13 +94,24 @@ const Sidebar: React.FC<SidebarProps> = ({ userRole }) => {
 
           {/* User Links */}
           {userRole === 'user' && (
+            <>
+              <NavLink
+            to="/dashboard/user"
+            className={({ isActive }) => `${linkClass} ${isActive ? activeLinkClass : ''}`}
+            end
+          >
+            <Home size={20} />
+            <span>Dashboard</span>
+          </NavLink>
+            
             <NavLink
-              to="/dashboard/orders"
+              to="/dashboard/user/orders"
               className={({ isActive }) => `${linkClass} ${isActive ? activeLinkClass : ''}`}
-            >
+              >
               <ShoppingCart size={20} />
               <span>My Orders</span>
             </NavLink>
+              </>
           )}
 
           {/* Common account links */}
@@ -106,7 +134,7 @@ const Sidebar: React.FC<SidebarProps> = ({ userRole }) => {
       </div>
 
       <div className="p-4 border-t border-gray-200">
-        <button className={`${linkClass} w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50`}>
+        <button onClick={onLogout} className={`${linkClass} w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50`}>
           <LogOut size={20} />
           <span>Logout</span>
         </button>

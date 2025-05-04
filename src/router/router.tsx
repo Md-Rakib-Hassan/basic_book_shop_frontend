@@ -25,6 +25,10 @@ import AddBook from "../pages/dashboard/admin/AddBook";
 import ManageBooks from "../pages/dashboard/admin/ManageBooks";
 import ManageUsers from "../pages/dashboard/admin/ManageUsers";
 import AdminDashboard from "../pages/dashboard/admin/AdminDashboard";
+import UserOrders from "../pages/dashboard/user/UserOrders";
+import UserDashboard from "../pages/dashboard/user/UserDashboard";
+import PaymentSuccessPage from "../pages/PaymentSuccessPage";
+import PaymentFailedPage from "../pages/PaymentFailedPage";
 
 
 
@@ -49,6 +53,11 @@ import AdminDashboard from "../pages/dashboard/admin/AdminDashboard";
           path: "/books/:bookId",
           element: <Book></Book>,
         },
+
+        {
+          path: "/checkout/:bookId",
+          element: <ProtectedRoute><Checkout></Checkout></ProtectedRoute>
+        },
         {
           path: "/about",
           element: <AboutUs></AboutUs>,
@@ -60,6 +69,14 @@ import AdminDashboard from "../pages/dashboard/admin/AdminDashboard";
         {
           path: "/faq",
           element: <Faq></Faq>,
+        },
+        {
+          path: "/success/:tran_id",
+          element: <PaymentSuccessPage></PaymentSuccessPage>,
+        },
+        {
+          path: "/fail/:tran_id",
+          element: <PaymentFailedPage></PaymentFailedPage>,
         },
       ],
     },
@@ -80,32 +97,41 @@ import AdminDashboard from "../pages/dashboard/admin/AdminDashboard";
     },
     {
       path: "/dashboard",
-      element: <DashboardLayout />,
+      element: <ProtectedRoute><DashboardLayout /></ProtectedRoute>,
       children: [
         
         {
           index: true,
+          path:'admin',
           element: <AdminDashboard  />,
         },
         {
-          path: "users",
+          path: "user",
+          element: <UserDashboard />,
+        },
+        {
+          path: "admin/users",
           element: <ManageUsers />,
         },
         {
-          path: "books",
+          path: "admin/books",
           element: <ManageBooks />,
         },
         {
-          path: "books/add",
+          path: "admin/books/add",
           element: <AddBook />,
         },
         {
-          path: "books/edit/:id",
+          path: "admin/books/edit/:id",
           element: <EditBook />,
         },
         {
-          path: "orders",
+          path: "admin/orders",
           element: <ManageOrders />,
+        },
+        {
+          path: "user/orders",
+          element: <UserOrders />,
         },
         {
           path: "profile",
@@ -116,10 +142,7 @@ import AdminDashboard from "../pages/dashboard/admin/AdminDashboard";
           path: "change-password",
           element: <ChangePassword />,
         },
-        {
-          path: "*",
-          element: <Navigate to="/" />,
-        },
+        
       ],
     },
   ]);
