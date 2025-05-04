@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
-import { mockUsers } from '../../../utils/mockData';
+import { useFullUser } from '../../../redux/hooks/useUserByEmail';
 
 const UserProfile: React.FC = () => {
   // Get user ID (would normally come from auth)
-  const userId = '1'; // Mock user ID
-  
-  // Get user data
-  const userData = mockUsers.find(user => user._id === userId);
+  const user = useFullUser();
+  const userData = user.user;
   
   const [formData, setFormData] = useState({
     Name: userData?.Name || '',

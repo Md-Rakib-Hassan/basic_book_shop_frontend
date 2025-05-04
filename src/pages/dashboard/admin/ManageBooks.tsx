@@ -3,12 +3,17 @@ import { Link } from 'react-router';
 import { PlusCircle, Edit, Trash } from 'lucide-react';
 import { motion } from 'framer-motion';
 import DataTable from '../../../components/dashboard/DataTable';
-import { mockBooks, mockAuthors } from '../../../utils/mockData';
 import { toast } from 'sonner';
+import { useGetBookQuery } from '../../../redux/features/books/bookApi';
+import LoadingPage from '../../LoadingPage';
 
 const ManageBooks: React.FC = () => {
-  const booksWithAuthors = mockBooks.map(book => {
-    const author = mockAuthors.find(a => a._id === book.Author);
+  const { data, isLoading } = useGetBookQuery('');
+  if (isLoading) return <LoadingPage></LoadingPage>
+  const books = data?.data || [];
+  // console.log(books);
+  const booksWithAuthors = books.map(book => {
+    const author =  book.Author;
     return { ...book, authorName: author ? author.Name : 'Unknown' };
   });
   
@@ -85,7 +90,7 @@ const ManageBooks: React.FC = () => {
             header: 'Actions',
             accessor: (book) => (
               <div className="flex space-x-2">
-                <Link to={`/dashboard/books/edit/${book._id}`}>
+                <Link to={`/dashboard/admin/books/edit/${book._id}`}>
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}

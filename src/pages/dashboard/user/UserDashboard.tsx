@@ -3,16 +3,17 @@ import { motion } from 'framer-motion';
 import { ShoppingCart, BookOpen, Clock, Bookmark } from 'lucide-react';
 import StatCard from '../../../components/dashboard/StatCard';
 import { mockOrders } from '../../../utils/mockData';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
+import { useGetMyOrdersQuery } from '../../../redux/features/order/orderApi';
+import LoadingPage from '../../LoadingPage';
 
 const UserDashboard: React.FC = () => {
-  // Get user ID (would normally come from auth)
-  const userId = '1'; // Mock user ID
-  
-  // Filter orders for this user
-  const userOrders = mockOrders.filter(order => order.UserId === userId);
-  
+   const { data, isLoading, error } = useGetMyOrdersQuery('');
+   
+   if (isLoading) return <LoadingPage></LoadingPage>;
+   const userOrders = data?.data || [];
   // Calculate stats
+  console.log(userOrders);
   const totalOrders = userOrders.length;
   const totalSpent = userOrders.reduce((sum, order) => sum + order.Total, 0);
   const pendingOrders = userOrders.filter(order => 
@@ -20,9 +21,9 @@ const UserDashboard: React.FC = () => {
   ).length;
   
   // Get recent orders
-  const recentOrders = userOrders
+  const recentOrders = [...userOrders]
     .sort((a, b) => new Date(b.OrderDate as Date).getTime() - new Date(a.OrderDate as Date).getTime())
-    .slice(0, 3);
+    .slice(0, 2);
 
   return (
     <div className="space-y-6">
@@ -32,7 +33,7 @@ const UserDashboard: React.FC = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         <StatCard
           title="Total Orders"
           value={totalOrders}
@@ -41,7 +42,7 @@ const UserDashboard: React.FC = () => {
         />
         <StatCard
           title="Total Spent"
-          value={`$${totalSpent.toFixed(2)}`}
+          value={`৳${totalSpent.toFixed(2)}`}
           icon={BookOpen}
           color="bg-green-600"
         />
@@ -51,19 +52,19 @@ const UserDashboard: React.FC = () => {
           icon={Clock}
           color="bg-amber-600"
         />
-        <StatCard
+        {/* <StatCard
           title="Wishlist Items"
           value="0"
           icon={Bookmark}
           color="bg-purple-600"
-        />
+        /> */}
       </div>
 
       {/* Recent Orders */}
       <div className="mt-8">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-medium text-gray-900">Recent Orders</h2>
-          <Link to="/dashboard/orders">
+          <Link to="/dashboard/user/orders">
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -91,7 +92,7 @@ const UserDashboard: React.FC = () => {
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="font-medium text-gray-900">${order.Total.toFixed(2)}</p>
+                      <p className="font-medium text-gray-900">৳{order.Total.toFixed(2)}</p>
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                         order.OrderStatus === 'Delivered' 
                           ? 'bg-green-100 text-green-800' 
@@ -138,7 +139,7 @@ const UserDashboard: React.FC = () => {
                 <h3 className="font-medium text-gray-900">Recommended Book {index}</h3>
                 <p className="text-sm text-gray-500 mt-1">Based on your reading history</p>
                 <div className="mt-4 flex justify-between items-center">
-                  <span className="text-primary-600 font-medium">$14.99</span>
+                  <span className="text-primary-600 font-medium">৳14.99</span>
                   <button className="text-sm btn btn-primary py-1">View Details</button>
                 </div>
               </div>

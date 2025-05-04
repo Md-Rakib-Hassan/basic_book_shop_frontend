@@ -1,15 +1,22 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import DataTable from '../../../components/dashboard/DataTable';
-
-
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
-import { mockUsers } from '../../../utils/mockData';
 import { IUser } from '../../../types/user';
+import { useGetAllUsersQuery } from '../../../redux/features/user/userApi';
+import LoadingPage from '../../LoadingPage';
 
 const ManageUsers: React.FC = () => {
-  const [users, setUsers] = useState<IUser[]>(mockUsers);
 
+  const {data,isLoading}=useGetAllUsersQuery('');
+  const [users, setUsers] = useState<IUser[]>([]);
+  useEffect(() => {
+    if (data?.data) {
+      setUsers(data.data);
+    }
+  }, [data]);
+
+  if (isLoading) return <LoadingPage></LoadingPage>;
   const toggleBlockUser = (userId: string) => {
     const updatedUsers = users.map(user => {
       if (user._id === userId) {

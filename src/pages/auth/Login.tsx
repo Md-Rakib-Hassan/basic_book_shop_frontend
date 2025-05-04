@@ -25,7 +25,8 @@ const Login: React.FC = () => {
     e.preventDefault();
       //   console.log("Login Credentials:", credentials);
       
-    const res = await login(credentials).unwrap();
+    try {
+      const res = await login(credentials).unwrap();
     console.log(res);
       
     if (res) {
@@ -34,6 +35,12 @@ const Login: React.FC = () => {
     }
     toast.success("Login successful!");
         navigate("/");
+    }
+    catch {
+      toast.error("Login failed. Please check your credentials.");
+    }
+    
+    
     };
     
     

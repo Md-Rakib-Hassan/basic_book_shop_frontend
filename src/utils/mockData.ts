@@ -220,13 +220,13 @@ export const mockOrders: IOrder[] = [
 ];
 
 // Get full book data with author included
-export const getBookWithAuthor = (bookId: string) => {
-  const book = mockBooks.find(b => b._id === bookId);
-  if (!book) return null;
+// export const getBookWithAuthor = (bookId: string) => {
+//   const book = mockBooks.find(b => b._id === bookId);
+//   if (!book) return null;
   
-  const author = mockAuthors.find(a => a._id === book.Author);
-  return { ...book, Author: author };
-};
+//   const author = mockAuthors.find(a => a._id === book.Author);
+//   return { ...book, Author: author };
+// };
 
 // Get full order data with user and books included
 export const getOrderWithDetails = (orderId: string) => {

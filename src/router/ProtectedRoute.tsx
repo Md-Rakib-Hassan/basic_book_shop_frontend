@@ -1,14 +1,29 @@
 import { ReactNode, } from "react";
-import { useCurrentToken } from "../redux/features/auth/authSlice";
-import { useAppSelector } from "../redux/hooks";
-import { Navigate } from "react-router";
+import { Navigate, useNavigate } from "react-router";
+import { useFullUser } from "../redux/hooks/useUserByEmail";
 
 const ProtectedRoute = ({ children }: { children: ReactNode }) => {
-    const token = useAppSelector(useCurrentToken);
-    if (!token) { 
+    const user = useFullUser();
+    const navigate = useNavigate();
+    console.log(user);
+    if (user?.isLoading) {
+        return <div>Loading...</div>;
+    }
+
+    if (!user?.user) {
         return <Navigate to="/auth/login" replace={true} />;
     }
-    return children
+    console.log(window.location.pathname);
+
+    if (user?.user?.UserType === "user" && window.location.pathname.startsWith("/dashboard/admin")) {
+        return navigate('/dashboard/user');
+    }
+
+    if (user?.user?.UserType === "admin" && window.location.pathname.startsWith("/dashboard/user")) {
+        return navigate('/dashboard/admin');
+    }
+
+    return children;
 };
 
 export default ProtectedRoute;

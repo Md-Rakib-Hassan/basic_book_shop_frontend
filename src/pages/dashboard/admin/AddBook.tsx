@@ -52,11 +52,11 @@ const AddBook: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="flex items-center">
-        <Link to="/dashboard/books" className="mr-4">
+      <Link to="/dashboard/books" className="mr-4">
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="p-2 text-gray-500 hover:text-primary-600 rounded-full hover:bg-gray-100"
+            className="p-2 text-gray`-500 hover:text-primary-600 rounded-full hover:bg-gray-100"
           >
             <ArrowLeft size={20} />
           </motion.button>

@@ -5,13 +5,18 @@ import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 import { Eye, CheckCircle, XCircle, Truck } from 'lucide-react';
 import { mockBooks, mockOrders, mockUsers } from '../../../utils/mockData';
+import { useGetAllOrdersQuery } from '../../../redux/features/order/orderApi';
+import LoadingPage from '../../LoadingPage';
 
 const ManageOrders: React.FC = () => {
-  const [orders, setOrders] = useState(mockOrders);
-
+  // const [orders, setOrders] = useState(mockOrders);
+  const { data, isLoading } = useGetAllOrdersQuery('');
+  if (isLoading) return <LoadingPage></LoadingPage>;
+  const orders = data?.data;
+  console.log(data);
   // Prepare the order data with user and book information
   const ordersWithDetails = orders.map(order => {
-    const user = mockUsers.find(u => u._id === order.UserId);
+    const user = order?.UserId;
     
     const bookDetails = order.BookDetails.map(bd => {
       const book = mockBooks.find(b => b._id === bd.BookId);
@@ -23,7 +28,7 @@ const ManageOrders: React.FC = () => {
     });
     
     const itemCount = bookDetails.reduce((sum, item) => sum + item.quantity, 0);
-    
+    console.log(user);
     return {
       ...order,
       userName: user ? user.Name : 'Unknown User',
@@ -32,31 +37,31 @@ const ManageOrders: React.FC = () => {
     };
   });
 
-  const updateOrderStatus = (orderId: string, status: string) => {
-    const updatedOrders = orders.map(order => {
-      if (order._id === orderId) {
-        const updatedOrder = { ...order, OrderStatus: status };
+  // const updateOrderStatus = (orderId: string, status: string) => {
+  //   const updatedOrders = orders.map(order => {
+  //     if (order._id === orderId) {
+  //       const updatedOrder = { ...order, OrderStatus: status };
         
-        // Log the action
-        console.log(`Order status updated:`, updatedOrder);
+  //       // Log the action
+  //       console.log(`Order status updated:`, updatedOrder);
         
-        toast.success(`Order #${orderId} status updated to ${status}`);
-        return updatedOrder;
-      }
-      return order;
-    });
+  //       toast.success(`Order #${orderId} status updated to ${status}`);
+  //       return updatedOrder;
+  //     }
+  //     return order;
+  //   });
     
-    setOrders(updatedOrders);
-  };
+  //   setOrders(updatedOrders);
+  // };
 
-  const viewOrderDetails = (order: any) => {
-    // Log the action
-    console.log('View order details:', order);
+  // const viewOrderDetails = (order: any) => {
+  //   // Log the action
+  //   console.log('View order details:', order);
     
-    toast.info(`Viewing details for order #${order._id}`);
+  //   toast.info(`Viewing details for order #${order._id}`);
     
-    // In a real app, this would open a modal with all details
-  };
+  //   // In a real app, this would open a modal with all details
+  // };
 
   return (
     <div className="space-y-6">
@@ -67,7 +72,7 @@ const ManageOrders: React.FC = () => {
 
       <DataTable
         columns={[
-          { header: 'Order ID', accessor: '_id' },
+          // { header: 'Order ID', accessor: '_id' },
           { 
             header: 'Customer', 
             accessor: 'userName',
@@ -91,7 +96,7 @@ const ManageOrders: React.FC = () => {
             header: 'Payment', 
             accessor: (order) => (
               <span className={`px-2 py-1 text-xs rounded-full font-medium ${
-                order.PaymentStatus === 'Completed' 
+                order.PaymentStatus === 'Paid' 
                   ? 'bg-green-100 text-green-800' 
                   : order.PaymentStatus === 'Pending'
                     ? 'bg-yellow-100 text-yellow-800'

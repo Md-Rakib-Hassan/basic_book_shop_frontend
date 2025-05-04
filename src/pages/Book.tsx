@@ -21,12 +21,12 @@ const Book = () => {
   const handleQtyIncrement = () => {setQty((prev)=>(prev<apiResponse?.data?.StockQuantity?prev+1:prev)) }
   const handleQtyDecrement = () => { setQty((prev) => (prev > 1 ? prev - 1 : prev))};
 
-  console.log(bookId);
+  //console.log(bookId);
   const { isLoading, currentData } = useGetSpecificBookQuery(bookId);
   const apiResponse = currentData as SpecificBookApiResponse;
   if (isLoading) return <LoadingPage></LoadingPage>;
   const { Title, Author, Price,  Description,  Reviews,ImageUrl } = apiResponse?.data ?? {};
-  console.log(currentData);
+ // console.log(currentData);
 
   
   return (
@@ -75,7 +75,7 @@ const Book = () => {
               </button>
             </div>
             <div>
-              <Link to={`/checkout/${bookId}`}><button className="bg-primary-500 text-white px-4 py-2 rounded-4xl shadow-sm shadow-primary-400 hover:bg-primary-600 transition duration-300 hover:shadow-lg cursor-pointer">
+              <Link to={`/checkout/${bookId}?qty=${qty}`}><button className="bg-primary-500 text-white px-4 py-2 rounded-4xl shadow-sm shadow-primary-400 hover:bg-primary-600 transition duration-300 hover:shadow-lg cursor-pointer">
                 {/* Add to Cart */}
                 Buy Now
               </button></Link>

@@ -4,11 +4,17 @@ import { Users, ShoppingCart, Book, DollarSign } from 'lucide-react';
 import StatCard from '../../../components/dashboard/StatCard';
 import DataTable from '../../../components/dashboard/DataTable';
 import { getStats } from '../../../utils/mockData';
+import { useGetAllOrdersQuery } from '../../../redux/features/order/orderApi';
+import LoadingPage from '../../LoadingPage';
 
 
 const AdminDashboard: React.FC = () => {
+
+    const { data, isLoading } = useGetAllOrdersQuery('');
+    if (isLoading) return <LoadingPage></LoadingPage>;
+    const orders = data?.data;
   const stats = getStats();
-  const recentOrders = stats.recentOrders.map(order => {
+  const recentOrders = orders.map(order => {
     // Get user name for the order
     const userName = order.UserId && typeof order.UserId === 'object' ? order.UserId.Name : 'Unknown';
     

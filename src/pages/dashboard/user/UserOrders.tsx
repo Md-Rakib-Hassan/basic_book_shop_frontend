@@ -1,20 +1,25 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ChevronDown, ChevronUp, Eye } from 'lucide-react';
-import { mockOrders, mockBooks } from '../../../utils/mockData';
 import { toast } from 'sonner';
+import { useGetMyOrdersQuery } from '../../../redux/features/order/orderApi';
+import LoadingPage from '../../LoadingPage';
 
 const UserOrders: React.FC = () => {
-  // Get user ID (would normally come from auth)
-  const userId = '1'; // Mock user ID
+
+  const { data, isLoading, error } = useGetMyOrdersQuery('');
+  const [expandedOrderId, setExpandedOrderId] = React.useState<string | null>(null);
+
   
-  // Filter orders for this user
-  const userOrders = mockOrders.filter(order => order.UserId === userId);
+  if (isLoading) return <LoadingPage></LoadingPage>;
+  const userOrders = data?.data || [];
   
-  // Prepare the order data with book information
+  // console.log(userOrders);
+
   const ordersWithDetails = userOrders.map(order => {
     const bookDetails = order.BookDetails.map(bd => {
-      const book = mockBooks.find(b => b._id === bd.BookId);
+      const book = bd.BookId;
+      // console.log( book);
       return {
         id: book?._id,
         title: book ? book.Title : 'Unknown Book',
@@ -31,20 +36,19 @@ const UserOrders: React.FC = () => {
     };
   });
 
-  const [expandedOrderId, setExpandedOrderId] = React.useState<string | null>(null);
-
+  
   const toggleOrderDetails = (orderId: string) => {
     setExpandedOrderId(expandedOrderId === orderId ? null : orderId);
   };
 
-  const viewOrderDetails = (order: any) => {
-    // Log the action
-    console.log('View order details:', order);
+  // const viewOrderDetails = (order: any) => {
+
+  //   console.log('View order details:', order);
     
-    toast.info(`Viewing details for order #${order._id}`);
+  //   toast.info(`Viewing details for order #${order._id}`);
     
-    // In a real app, this would open a modal with all details
-  };
+
+  // };
 
   return (
     <div className="space-y-6">
@@ -73,7 +77,7 @@ const UserOrders: React.FC = () => {
                 </div>
                 <div className="flex items-center space-x-4">
                   <div className="text-right">
-                    <p className="font-medium text-gray-900">${order.Total.toFixed(2)}</p>
+                    <p className="font-medium text-gray-900">৳ {order.Total.toFixed(2)}</p>
                     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                       order.OrderStatus === 'Delivered' 
                         ? 'bg-green-100 text-green-800' 
@@ -114,12 +118,12 @@ const UserOrders: React.FC = () => {
                         <div className="flex-1 min-w-0">
                           <p className="font-medium text-gray-900">{book.title}</p>
                           <p className="text-sm text-gray-500">
-                            Qty: {book.quantity} × ${book.price.toFixed(2)}
+                            Qty: {book.quantity} × ৳ {book.price.toFixed(2)}
                           </p>
                         </div>
                         <div className="text-right">
                           <p className="font-medium text-gray-900">
-                            ${(book.quantity * book.price).toFixed(2)}
+                          ৳ {(book.quantity * book.price).toFixed(2)}
                           </p>
                         </div>
                       </div>
@@ -128,28 +132,28 @@ const UserOrders: React.FC = () => {
                     <div className="pt-4 border-t border-gray-200">
                       <div className="flex justify-between text-sm">
                         <p className="text-gray-500">Subtotal</p>
-                        <p className="text-gray-900">${order.SubTotal.toFixed(2)}</p>
+                        <p className="text-gray-900">৳ {order.SubTotal.toFixed(2)}</p>
                       </div>
                       <div className="flex justify-between text-sm mt-1">
                         <p className="text-gray-500">Shipping</p>
-                        <p className="text-gray-900">${(order.Total - order.SubTotal).toFixed(2)}</p>
+                        <p className="text-gray-900">৳ {(order.Total - order.SubTotal).toFixed(2)}</p>
                       </div>
                       <div className="flex justify-between font-medium text-base mt-2">
                         <p className="text-gray-900">Total</p>
-                        <p className="text-gray-900">${order.Total.toFixed(2)}</p>
+                        <p className="text-gray-900">৳ {order.Total.toFixed(2)}</p>
                       </div>
                     </div>
 
                     <div className="pt-4 flex justify-between items-center border-t border-gray-200">
                       <div>
-                        <p className="text-sm text-gray-500">
+                        {/* <p className="text-sm text-gray-500">
                           Payment Method: <span className="font-medium">{order.PaymentMethod}</span>
-                        </p>
+                        </p> */}
                         <p className="text-sm text-gray-500">
                           Payment Status: <span className="font-medium">{order.PaymentStatus}</span>
                         </p>
                       </div>
-                      <motion.button
+                      {/* <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => viewOrderDetails(order)}
@@ -157,7 +161,7 @@ const UserOrders: React.FC = () => {
                       >
                         <Eye size={16} />
                         View Details
-                      </motion.button>
+                      </motion.button> */}
                     </div>
                   </div>
                 </div>
