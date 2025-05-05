@@ -4,7 +4,7 @@ const userApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getUserByEmail: builder.query({
         query: (email: string) => `/user/single/${email}`,
-        providesTags: (result, error, email) => [{ type: "User", id: email }],
+        providesTags: (email) => [{ type: "Books", id: email }],
     }),
 
     getAllUsers: builder.query({
@@ -17,7 +17,23 @@ const userApi = baseApi.injectEndpoints({
       },
       providesTags: ["User"],
     }),
+
+    blockUser: builder.mutation({
+      query: (userId) => ({
+        url: `/user/block/${userId}`,
+        method: "PATCH",
+      }),
+      invalidatesTags: ["User"],
+    }),
+    unblockUser: builder.mutation({
+      query: (userId) => ({
+        url: `/user/unblock/${userId}`,
+        method: "PATCH",
+      }),
+      invalidatesTags: ["User"],
+    }),
+    
   }),
 });
 
-export const { useGetUserByEmailQuery, useGetAllUsersQuery} = userApi;
+export const { useGetUserByEmailQuery, useGetAllUsersQuery,useBlockUserMutation, useUnblockUserMutation} = userApi;

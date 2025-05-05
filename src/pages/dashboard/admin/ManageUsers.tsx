@@ -3,12 +3,15 @@ import DataTable from '../../../components/dashboard/DataTable';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 import { IUser } from '../../../types/user';
-import { useGetAllUsersQuery } from '../../../redux/features/user/userApi';
+import { useBlockUserMutation, useGetAllUsersQuery, useUnblockUserMutation } from '../../../redux/features/user/userApi';
 import LoadingPage from '../../LoadingPage';
+import { showConfirm } from '../../../components/ui/Confirm Modal/ConfirmDialog';
 
 const ManageUsers: React.FC = () => {
 
-  const {data,isLoading}=useGetAllUsersQuery('');
+  const { data, isLoading } = useGetAllUsersQuery('');
+  const [blockUser] = useBlockUserMutation();
+  const [unblockUser] = useUnblockUserMutation();
   const [users, setUsers] = useState<IUser[]>([]);
   useEffect(() => {
     if (data?.data) {
@@ -17,21 +20,65 @@ const ManageUsers: React.FC = () => {
   }, [data]);
 
   if (isLoading) return <LoadingPage></LoadingPage>;
-  const toggleBlockUser = (userId: string) => {
-    const updatedUsers = users.map(user => {
-      if (user._id === userId) {
-        const updatedUser = { ...user, isBlocked: !user.isBlocked };
-        
-        // Log the action
-        console.log(`User ${user.isBlocked ? 'unblocked' : 'blocked'}:`, updatedUser);
-        
-        toast.success(`User ${updatedUser.Name} has been ${updatedUser.isBlocked ? 'blocked' : 'unblocked'}`);
-        return updatedUser;
-      }
-      return user;
-    });
+  const toggleBlockUser = (user) => {
+    const userId = user._id;
+    const isBlocked = user.isBlocked;
+    if (isBlocked) {
+      showConfirm({
+        title: 'Unblock this user?',
+        message: 'Are you sure you want to unblock this user?',
+        onConfirm: async () => {
+          try {
+            toast.loading('unblocking user...');
+            await unblockUser(userId).unwrap();
+            toast.dismiss();
+            toast.success('User unblocked successfully');
+          } catch (error) {
+            toast.dismiss();
+            toast.error('Failed to unblock user. Please try again.');
+          }
+        },
+        onCancel: () => {
+          toast.info('User unblocking cancelled');
+        },
+      })
+    }
+    else {
+      
     
-    setUsers(updatedUsers);
+    showConfirm({
+      title: 'Block this user?',
+      message: 'Are you sure you want to block this user?',
+      onConfirm: async () => {
+        try {
+          toast.loading('Blocking user...');
+          await blockUser(userId).unwrap();
+          toast.dismiss();
+          toast.success('User blocked successfully');
+        } catch (error) {
+          toast.dismiss();
+          toast.error('Failed to block user. Please try again.');
+        }
+      },
+      onCancel: () => {
+        toast.info('User blocking cancelled');
+      },
+    })
+  }
+    // const updatedUsers = users.map(user => {
+    //   if (user._id === userId) {
+    //     const updatedUser = { ...user, isBlocked: !user.isBlocked };
+        
+    //     // Log the action
+    //     console.log(`User ${user.isBlocked ? 'unblocked' : 'blocked'}:`, updatedUser);
+        
+    //     toast.success(`User ${updatedUser.Name} has been ${updatedUser.isBlocked ? 'blocked' : 'unblocked'}`);
+    //     return updatedUser;
+    //   }
+    //   return user;
+    // });
+    
+    // setUsers(updatedUsers);
   };
 
   return (
@@ -91,7 +138,7 @@ const ManageUsers: React.FC = () => {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => toggleBlockUser(user._id as string)}
+                  onClick={() => toggleBlockUser(user)}
                   className={`px-3 py-1 text-xs font-medium rounded-md ${
                     user.isBlocked
                       ? 'bg-green-100 text-green-700 hover:bg-green-200'
