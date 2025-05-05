@@ -45,7 +45,7 @@ const BookCard: FC<IBookProps> = ({ book, types }) => {
         {book.Title.length > 16 ? book.Title.slice(0, 14) + "..." : book.Title}
       </h3>
       <h4 className="text-xs text-gray-400 font-semibold">
-        {book.Author.Name}
+        {book.Author}
       </h4>
 
       {types === "bestSeller" && (

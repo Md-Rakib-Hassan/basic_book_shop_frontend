@@ -66,7 +66,7 @@ const Banner = () => {
                               />                              <div className='pl-8 text-white flex flex-col md:gap-2 gap-1'>
                                 <h1 className='md:text-3xl text-xl font-bold '>{book?.Title}</h1>
                                 <p className='md:text-lg text-base '>৳ {book?.Price}</p> 
-                                <p className='md:text-lg text-base'>Author: {book?.Author.Name}</p>
+                                <p className='md:text-lg text-base'>Author: {book?.Author}</p>
                                 <Link to={`/books/${book._id}`} className='bg-white p-2 text-black rounded-3xl px-6 w-fit shadow-lg' >View Details</Link>
                               </div>
                             </div>

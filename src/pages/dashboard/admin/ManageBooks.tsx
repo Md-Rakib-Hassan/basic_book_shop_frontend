@@ -4,22 +4,43 @@ import { PlusCircle, Edit, Trash } from 'lucide-react';
 import { motion } from 'framer-motion';
 import DataTable from '../../../components/dashboard/DataTable';
 import { toast } from 'sonner';
-import { useGetBookQuery } from '../../../redux/features/books/bookApi';
+import { useDeleteBookMutation, useGetBookQuery } from '../../../redux/features/books/bookApi';
 import LoadingPage from '../../LoadingPage';
+import { confirmAlert } from 'react-confirm-alert';
+import { showConfirm } from '../../../components/ui/Confirm Modal/ConfirmDialog';
+
 
 const ManageBooks: React.FC = () => {
   const { data, isLoading } = useGetBookQuery('');
+  const [deleteBook] = useDeleteBookMutation();
   if (isLoading) return <LoadingPage></LoadingPage>
   const books = data?.data || [];
   // console.log(books);
   const booksWithAuthors = books.map(book => {
     const author =  book.Author;
-    return { ...book, authorName: author ? author.Name : 'Unknown' };
+    return { ...book, authorName: author ? author : 'Unknown' };
   });
   
-  const handleDeleteBook = (bookId: string) => {
-    console.log('Delete book:', bookId);
-    toast.success('Book deleted successfully');
+  const handleDeleteBook = async (bookId: string) => {
+    showConfirm({
+      title: 'Delete this item?',
+      message: 'This action cannot be undone.',
+      onConfirm: async() => {
+        try {
+          toast.loading('Deleting book...');
+          await deleteBook(bookId).unwrap();
+          toast.dismiss();
+          toast.success('Book deleted successfully');
+        } catch (error) {
+          toast.dismiss();
+          toast.error('Failed to delete book. Please try again.');
+        }
+      },
+      onCancel: () => {
+        toast.info('Book deletion cancelled');
+      },
+    });
+   
   };
 
   return (

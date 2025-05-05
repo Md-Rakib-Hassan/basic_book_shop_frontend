@@ -7,13 +7,15 @@ import { Category } from '../../../types';
 import { mockAuthors } from '../../../utils/mockData';
 import useImageUpload from '../../../hooks/useImageUpload';
 import { useAddBookMutation } from '../../../redux/features/books/bookApi';
+import { useFullUser } from '../../../redux/hooks/useUserByEmail';
 
 
 const AddBook: React.FC = () => {
   const navigate = useNavigate();
   const [image, setImage] = useState<File | null>(null);
   const { uploadImage, isUploading } = useImageUpload();
-  const [addBook,{isLoading,isError}] = useAddBookMutation();
+  const [addBook, { isLoading, isError }] = useAddBookMutation();
+  const user = useFullUser();
   const [formData, setFormData] = useState({
     Title: '',
     ISBN: '',
@@ -44,7 +46,9 @@ const AddBook: React.FC = () => {
     let uploadedImageUrl = "";
 
     if (image) {
-      uploadedImageUrl = await uploadImage(image);
+      const { url, public_id } = await uploadImage(image);
+      uploadedImageUrl = url;
+
     }
     // Convert numeric fields
     const numericFormData = {
@@ -54,27 +58,26 @@ const AddBook: React.FC = () => {
       StockQuantity: parseInt(formData.StockQuantity, 10),
       PublishedYear: parseInt(formData.PublishedYear, 10),
     };
-    const result = await addBook(numericFormData).unwrap();
-    if (isError) {
-      toast.error('Failed to add book. Please try again.');
-      return;
-    }
-    if (isLoading) {
-      toast.loading('Adding book...');
-    }
-    if (result) {
+    toast.loading('Adding book...')
+    try {
+      const result= await addBook(numericFormData).unwrap();
+      toast.dismiss(); // dismiss loading toast
       toast.success('Book added successfully!');
+      navigate(`/dashboard/${user?.UserType}/books`);
+    } catch (err) {
+      toast.dismiss(); // dismiss loading toast
+       // Extract and show specific validation error from Zod
+    const zodErrors = err?.data?.error?.details;
+    if (Array.isArray(zodErrors)) {
+      zodErrors.forEach((detail: any) => {
+        toast.error(detail?.message || 'Validation error');
+      });
     } else {
-      toast.error('Failed to add book. Please try again.');
+      toast.error(err?.data?.message || 'Failed to add book. Please try again.');
     }
-    // Log the data as requested
-    console.log('Add book form submitted with data:', numericFormData);
-    
-    // Show success toast
-    toast.success('Book added successfully!');
-    
-    // Navigate back to books list
-    navigate('/dashboard/books');
+
+    console.error('Add book error:', err);
+  }
   };
 
   return (

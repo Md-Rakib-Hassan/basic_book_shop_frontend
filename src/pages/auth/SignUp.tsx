@@ -42,7 +42,8 @@ const SignUp: React.FC = () => {
       let uploadedImageUrl = "";
 
       if (image) {
-        uploadedImageUrl = await uploadImage(image);
+        const { url, public_id } = await uploadImage(image);
+      uploadedImageUrl = url;
       }
       const payload = { ...formData, ProfileImage: uploadedImageUrl };
   

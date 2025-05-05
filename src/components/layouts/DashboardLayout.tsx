@@ -5,6 +5,7 @@ import Sidebar from '../dashboard/Sidebar';
 import Header from '../dashboard/Header';
 import { useFullUser } from '../../redux/hooks/useUserByEmail';
 import LoadingPage from '../../pages/LoadingPage';
+import { Toaster } from 'sonner';
 
 
 
@@ -21,6 +22,7 @@ const DashboardLayout = () => {
 
   return (
     <div className="flex h-screen bg-gray-100">
+      <Toaster richColors position="top-right" />
       {/* Sidebar for mobile - with overlay */}
       <AnimatePresence>
         {sidebarOpen && (

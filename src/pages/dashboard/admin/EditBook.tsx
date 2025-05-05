@@ -2,89 +2,145 @@ import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
-import { ArrowLeft } from 'lucide-react';
-import { Category, SpecificBookApiResponse } from '../../../types';
-import { mockAuthors, mockBooks } from '../../../utils/mockData';
+import { ArrowLeft, Pencil } from 'lucide-react';
+import { SpecificBookApiResponse } from '../../../types';
 import LoadingPage from '../../LoadingPage';
-import { useGetSpecificBookQuery } from '../../../redux/features/books/bookApi';
-
+import { useGetSpecificBookQuery, useUpdateBookMutation } from '../../../redux/features/books/bookApi';
+import { useFullUser } from '../../../redux/hooks/useUserByEmail';
 
 const EditBook: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { isLoading, currentData } = useGetSpecificBookQuery(id);
+  const [updateBook] = useUpdateBookMutation();
+  const user = useFullUser();
   const apiResponse = currentData as SpecificBookApiResponse;
 
-  const { Title,ISBN,Category, Author, Price,StockQuantity,  Description,ImageUrl } = apiResponse?.data ?? {};
   const [formData, setFormData] = useState({
-    Title,
-    ISBN,
-    Author,
-    Category,
-    Price,
-    StockQuantity,
+    Title: '',
+    ISBN: '',
+    Author: '',
+    Price: '',
+    StockQuantity: '',
     PublishedYear: '',
-    Description,
-    ImageUrl,
+    Description: ''
   });
- 
 
-  // useEffect(() => {
-  //   // Simulate fetching book data
-    
-  //   if (book) {
-  //     setFormData({
-  //       Title: book.Title,
-  //       ISBN: book.ISBN,
-  //       Author: book.Author as string,
-  //       Category: book.Category,
-  //       Price: book.Price.toString(),
-  //       StockQuantity: book.StockQuantity.toString(),
-  //       PublishedYear: book.PublishedYear.toString(),
-  //       Description: book.Description,
-  //       ImageUrl: book.ImageUrl,
-  //     });
-  //   } else {
-  //     toast.error('Book not found');
-  //     // navigate('/dashboard/books');
-  //   }
-    
-  // }, [id, navigate]);
+  const [editableFields, setEditableFields] = useState<{ [key: string]: boolean }>({});
+  const [editedFields, setEditedFields] = useState<{ [key: string]: boolean }>({});
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => {
+  useEffect(() => {
+    if (apiResponse?.data) {
+      const {
+        Title,
+        ISBN,
+        Author,
+        Price,
+        StockQuantity,
+        PublishedYear,
+        Description
+      } = apiResponse.data;
+
+      setFormData({
+        Title,
+        ISBN,
+        Author,
+        Price: Price.toString(),
+        StockQuantity: StockQuantity.toString(),
+        PublishedYear: PublishedYear.toString(),
+        Description
+      });
+
+      setEditableFields({
+        Title: false,
+        ISBN: false,
+        Author: false,
+        Price: false,
+        StockQuantity: false,
+        PublishedYear: false,
+        Description: false
+      });
+    }
+  }, [apiResponse]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData(prev => ({ ...prev, [name]: value }));
+    setEditedFields(prev => ({ ...prev, [name]: true }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleEnableField = (field: string) => {
+    setEditableFields(prev => ({ ...prev, [field]: true }));
+  };
+
+  const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
+
+    const updatedData: any = {};
+
+    Object.entries(editedFields).forEach(([field, wasEdited]) => {
+      if (wasEdited) {
+        if (['Price', 'StockQuantity', 'PublishedYear'].includes(field)) {
+          updatedData[field] = Number(formData[field]);
+        } else {
+          updatedData[field] = formData[field];
+        }
+      }
+    });
+
+    console.log('Submitting only edited fields:', updatedData);
+    try {
+      toast.loading('Updating book...');
+      const res = await updateBook({ id, ...updatedData }).unwrap();
+      toast.dismiss(); // dismiss loading toast
+      toast.success('Book updated successfully!');
+      navigate(`/dashboard/${user?.user?.UserType}/books`);
+      console.log(res);
+    }
+    catch (err) {
+      toast.dismiss(); // dismiss loading toast
+      const errorMessage = isError ? 'Failed to update book. Please try again.' : 'Book updated successfully!';
+      toast.error(errorMessage);
+      console.error('Update book error:', err);
+      return;
+    }
     
-    // Convert numeric fields
-    const numericFormData = {
-      ...formData,
-      Price: parseFloat(formData.Price),
-      StockQuantity: parseInt(formData.StockQuantity, 10),
-      PublishedYear: parseInt(formData.PublishedYear, 10),
-    };
-    
-    // Log the data as requested
-    console.log('Edit book form submitted with data:', numericFormData);
-    
-    // Show success toast
-    toast.success('Book updated successfully!');
-    
-    // Navigate back to books list
-    navigate('/dashboard/books');
+  
   };
 
-  if (isLoading) return <LoadingPage></LoadingPage>;
+  if (isLoading) return <LoadingPage />;
+
+  const renderField = (label: string, name: string, type = 'text') => (
+    <div className="form-group">
+      <label htmlFor={name} className="form-label">{label}</label>
+      <div className="flex items-center">
+        <input
+          type={type}
+          id={name}
+          name={name}
+          value={formData[name as keyof typeof formData]}
+          onChange={handleChange}
+          className={`form-input flex-1 ${
+            editableFields[name] ? 'border-gray-300' : 'bg-gray-300 cursor-not-allowed'}`}
+          disabled={!editableFields[name]}
+        />
+        {!editableFields[name] && (
+          <button
+            type="button"
+            onClick={() => handleEnableField(name)}
+            className="ml-2 text-gray-500 hover:text-primary-600"
+          >
+            <Pencil size={16} />
+          </button>
+        )}
+      </div>
+    </div>
+  );
 
   return (
     <div className="space-y-6">
       <div className="flex items-center">
-        <Link to="/dashboard/books" className="mr-4">
+        <Link to={`/dashboard/${user?.user?.UserType}/books`} className="mr-4">
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -101,142 +157,41 @@ const EditBook: React.FC = () => {
 
       <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-sm space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="form-group">
-            <label htmlFor="Title" className="form-label">Title</label>
-            <input
-              type="text"
-              id="Title"
-              name="Title"
-              value={formData.Title}
-              onChange={handleChange}
-              className="form-input"
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="ISBN" className="form-label">ISBN</label>
-            <input
-              type="text"
-              id="ISBN"
-              name="ISBN"
-              value={formData.ISBN}
-              onChange={handleChange}
-              className="form-input"
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="Author" className="form-label">Author</label>
-            <select
-              id="Author"
-              name="Author"
-              value={formData.Author}
-              onChange={handleChange}
-              className="form-input"
-              required
-            >
-              <option value="">Select Author</option>
-              {mockAuthors.map(author => (
-                <option key={author._id} value={author._id}>
-                  {author.Name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="Category" className="form-label">Category</label>
-            <select
-              id="Category"
-              name="Category"
-              value={formData.Category}
-              onChange={handleChange}
-              className="form-input"
-              required
-            >
-              {Object.values(Category).map(category => (
-                <option key={category} value={category}>
-                  {category}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="Price" className="form-label">Price ($)</label>
-            <input
-              type="number"
-              id="Price"
-              name="Price"
-              value={formData.Price}
-              onChange={handleChange}
-              step="0.01"
-              min="0"
-              className="form-input"
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="StockQuantity" className="form-label">Stock Quantity</label>
-            <input
-              type="number"
-              id="StockQuantity"
-              name="StockQuantity"
-              value={formData.StockQuantity}
-              onChange={handleChange}
-              min="0"
-              className="form-input"
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="PublishedYear" className="form-label">Published Year</label>
-            <input
-              type="number"
-              id="PublishedYear"
-              name="PublishedYear"
-              value={formData.PublishedYear}
-              onChange={handleChange}
-              min="1000"
-              max={new Date().getFullYear()}
-              className="form-input"
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="ImageUrl" className="form-label">Image URL</label>
-            <input
-              type="url"
-              id="ImageUrl"
-              name="ImageUrl"
-              value={formData.ImageUrl}
-              onChange={handleChange}
-              className="form-input"
-              required
-            />
-          </div>
+          {renderField('Title', 'Title')}
+          {renderField('ISBN', 'ISBN')}
+          {renderField('Author', 'Author')}
+          {renderField('Price', 'Price', 'number')}
+          {renderField('Stock Quantity', 'StockQuantity', 'number')}
+          {renderField('Published Year', 'PublishedYear', 'number')}
         </div>
 
         <div className="form-group">
           <label htmlFor="Description" className="form-label">Description</label>
-          <textarea
-            id="Description"
-            name="Description"
-            value={formData.Description}
-            onChange={handleChange}
-            rows={4}
-            className="form-input"
-            required
-          ></textarea>
+          <div className="flex items-center">
+            <textarea
+              id="Description"
+              name="Description"
+              value={formData.Description}
+              onChange={handleChange}
+              rows={4}
+              className={`form-input flex-1 ${
+            editableFields.Description ? 'border-gray-300' : 'bg-gray-300 cursor-not-allowed'}`}
+              disabled={!editableFields.Description}
+            />
+            {!editableFields.Description && (
+              <button
+                type="button"
+                onClick={() => handleEnableField('Description')}
+                className="ml-2 text-gray-500 hover:text-primary-600"
+              >
+                <Pencil size={16} />
+              </button>
+            )}
+          </div>
         </div>
 
         <div className="flex justify-end space-x-4">
-          <Link to="/dashboard/books">
+          <Link to={`/dashboard/${user?.user?.UserType}/books`}>
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
