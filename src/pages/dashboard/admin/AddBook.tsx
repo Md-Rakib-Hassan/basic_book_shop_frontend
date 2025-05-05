@@ -5,10 +5,15 @@ import { toast } from 'sonner';
 import { ArrowLeft } from 'lucide-react';
 import { Category } from '../../../types';
 import { mockAuthors } from '../../../utils/mockData';
+import useImageUpload from '../../../hooks/useImageUpload';
+import { useAddBookMutation } from '../../../redux/features/books/bookApi';
 
 
 const AddBook: React.FC = () => {
   const navigate = useNavigate();
+  const [image, setImage] = useState<File | null>(null);
+  const { uploadImage, isUploading } = useImageUpload();
+  const [addBook,{isLoading,isError}] = useAddBookMutation();
   const [formData, setFormData] = useState({
     Title: '',
     ISBN: '',
@@ -28,17 +33,40 @@ const AddBook: React.FC = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (e.target.files && e.target.files[0]) {
+        setImage(e.target.files[0]);
+      }
+    };
+
+  const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
-    
+    let uploadedImageUrl = "";
+
+    if (image) {
+      uploadedImageUrl = await uploadImage(image);
+    }
     // Convert numeric fields
     const numericFormData = {
       ...formData,
       Price: parseFloat(formData.Price),
+      ImageUrl: uploadedImageUrl,
       StockQuantity: parseInt(formData.StockQuantity, 10),
       PublishedYear: parseInt(formData.PublishedYear, 10),
     };
-    
+    const result = await addBook(numericFormData).unwrap();
+    if (isError) {
+      toast.error('Failed to add book. Please try again.');
+      return;
+    }
+    if (isLoading) {
+      toast.loading('Adding book...');
+    }
+    if (result) {
+      toast.success('Book added successfully!');
+    } else {
+      toast.error('Failed to add book. Please try again.');
+    }
     // Log the data as requested
     console.log('Add book form submitted with data:', numericFormData);
     
@@ -97,21 +125,15 @@ const AddBook: React.FC = () => {
 
           <div className="form-group">
             <label htmlFor="Author" className="form-label">Author</label>
-            <select
+            <input
+              type="text"
               id="Author"
               name="Author"
               value={formData.Author}
               onChange={handleChange}
               className="form-input"
               required
-            >
-              <option value="">Select Author</option>
-              {mockAuthors.map(author => (
-                <option key={author._id} value={author._id}>
-                  {author.Name}
-                </option>
-              ))}
-            </select>
+            />
           </div>
 
           <div className="form-group">
@@ -133,7 +155,7 @@ const AddBook: React.FC = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="Price" className="form-label">Price ($)</label>
+            <label htmlFor="Price" className="form-label">Price</label>
             <input
               type="number"
               id="Price"
@@ -176,18 +198,18 @@ const AddBook: React.FC = () => {
             />
           </div>
 
-          <div className="form-group">
-            <label htmlFor="ImageUrl" className="form-label">Image URL</label>
+            <div className="form-group">
+            <label htmlFor="ImageFile" className="form-label">Image File</label>
             <input
-              type="url"
-              id="ImageUrl"
-              name="ImageUrl"
-              value={formData.ImageUrl}
-              onChange={handleChange}
+              type="file"
+              id="ImageFile"
+              name="ImageFile"
+              accept="image/*"
+              onChange={handleImageChange}
               className="form-input"
               required
             />
-          </div>
+            </div>
         </div>
 
         <div className="form-group">

@@ -90,7 +90,7 @@ const ManageBooks: React.FC = () => {
             header: 'Actions',
             accessor: (book) => (
               <div className="flex space-x-2">
-                <Link to={`/dashboard/admin/books/edit/${book._id}`}>
+                <Link to={`/dashboard/admin/books/edit/${book?._id}`}>
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
@@ -102,7 +102,7 @@ const ManageBooks: React.FC = () => {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => handleDeleteBook(book._id as string)}
+                  onClick={() => handleDeleteBook(book?._id as string)}
                   className="p-1.5 text-xs rounded-md bg-red-100 text-red-700 hover:bg-red-200"
                 >
                   <Trash size={16} />

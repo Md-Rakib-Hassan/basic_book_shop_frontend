@@ -21,8 +21,16 @@ const bookApi = baseApi.injectEndpoints({
         }),
         getSpecificBook: builder.query({
             query:(id)=>`/book/${id}`
-        })
+        }),
+        addBook: builder.mutation({
+            query: (book) => ({
+                url: '/book',
+                method: 'POST',
+                body: book,
+            }),
+            invalidatesTags: ['Book'],
+        }),
     })
 })
 
-export const { useGetBookQuery, useGetSpecificBookQuery} = bookApi;
+export const { useGetBookQuery, useGetSpecificBookQuery, useAddBookMutation} = bookApi;

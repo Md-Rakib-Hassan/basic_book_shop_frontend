@@ -118,7 +118,7 @@ import PaymentFailedPage from "../pages/PaymentFailedPage";
           element: <ManageBooks />,
         },
         {
-          path: "admin/books/add",
+          path: "books/add",
           element: <AddBook />,
         },
         {

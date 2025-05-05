@@ -40,7 +40,7 @@ const Book = () => {
           <h1 className="text-2xl font-semibold text-gray-700">
             {Title}
           </h1>
-          <p className="">Author: {Author.Name}</p>
+          <p className="">Author: {Author}</p>
           <Rating rating={Reviews?.AverageRating} TotalReviews={Reviews.TotalReviews}></Rating>
           {/* <p className=''>৳ {Price}</p>
            */}

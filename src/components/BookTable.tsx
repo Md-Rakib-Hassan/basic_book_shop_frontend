@@ -21,7 +21,7 @@ const BookTable = (props: TBookProps) => {
                     </tr>
                     <tr className="hover:bg-gray-50">
                         <th className={`${thClass}`}>Author</th>
-                        <td className={`${tdClass}`}>{Author?.Name}</td>
+                        <td className={`${tdClass}`}>{Author}</td>
                     </tr>
                     <tr className="hover:bg-gray-50">
                         <th className={`${thClass}`}>ISBN</th>

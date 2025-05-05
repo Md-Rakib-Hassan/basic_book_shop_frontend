@@ -6,6 +6,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import RingLoader from "react-spinners/RingLoader";
 import { useSignupMutation } from "../../redux/features/auth/authApi";
+import useImageUpload from "../../hooks/useImageUpload";
 const SignUp: React.FC = () => {
   const [formData, setFormData] = useState({
     Name: "",
@@ -15,11 +16,10 @@ const SignUp: React.FC = () => {
     Address: "",
     Phone: "",
   });
-  const[isImageUploading, setIsImageUploading] = useState(false);
   const [signup, { isError, isLoading, data, isSuccess }] = useSignupMutation();
   const [image, setImage] = useState<File | null>(null);
   const [setImageUrl] = useState<string>(""); // Removed unused 'imageUrl'
-
+  const { uploadImage, isUploading: isImageUploading } = useImageUpload();
   const navigate = useNavigate();
 
   const handleChange = (
@@ -42,19 +42,8 @@ const SignUp: React.FC = () => {
       let uploadedImageUrl = "";
 
       if (image) {
-        setIsImageUploading(true);
-        const formDataImg = new FormData();
-        formDataImg.append("file", image);
-        formDataImg.append("upload_preset", "BookShop"); // Replace with your Cloudinary upload preset
-
-        const response = await axios.post(
-          "https://api.cloudinary.com/v1_1/dw74s1u8t/image/upload",
-          formDataImg
-        );
-        uploadedImageUrl = response.data.secure_url;
- 
+        uploadedImageUrl = await uploadImage(image);
       }
-      setIsImageUploading(false);
       const payload = { ...formData, ProfileImage: uploadedImageUrl };
   
       const result = await signup(payload).unwrap();

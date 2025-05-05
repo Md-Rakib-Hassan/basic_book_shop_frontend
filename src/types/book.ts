@@ -20,7 +20,7 @@ export interface SpecificBookApiResponse {
 export interface IBook {
   _id: string;
   Title: string;
-  Author: IAuthor;
+  Author: string;
   Price: number;
   Category: Category;
   Description: string;

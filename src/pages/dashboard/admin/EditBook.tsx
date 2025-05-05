@@ -3,49 +3,53 @@ import { Link, useParams, useNavigate } from 'react-router';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 import { ArrowLeft } from 'lucide-react';
-import { Category } from '../../../types';
+import { Category, SpecificBookApiResponse } from '../../../types';
 import { mockAuthors, mockBooks } from '../../../utils/mockData';
+import LoadingPage from '../../LoadingPage';
+import { useGetSpecificBookQuery } from '../../../redux/features/books/bookApi';
 
 
 const EditBook: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    Title: '',
-    ISBN: '',
-    Author: '',
-    Category: Category.Fiction,
-    Price: '',
-    StockQuantity: '',
-    PublishedYear: '',
-    Description: '',
-    ImageUrl: '',
-  });
-  const [loading, setLoading] = useState(true);
+  const { isLoading, currentData } = useGetSpecificBookQuery(id);
+  const apiResponse = currentData as SpecificBookApiResponse;
 
-  useEffect(() => {
-    // Simulate fetching book data
-    const book = mockBooks.find(b => b._id === id);
+  const { Title,ISBN,Category, Author, Price,StockQuantity,  Description,ImageUrl } = apiResponse?.data ?? {};
+  const [formData, setFormData] = useState({
+    Title,
+    ISBN,
+    Author,
+    Category,
+    Price,
+    StockQuantity,
+    PublishedYear: '',
+    Description,
+    ImageUrl,
+  });
+ 
+
+  // useEffect(() => {
+  //   // Simulate fetching book data
     
-    if (book) {
-      setFormData({
-        Title: book.Title,
-        ISBN: book.ISBN,
-        Author: book.Author as string,
-        Category: book.Category,
-        Price: book.Price.toString(),
-        StockQuantity: book.StockQuantity.toString(),
-        PublishedYear: book.PublishedYear.toString(),
-        Description: book.Description,
-        ImageUrl: book.ImageUrl,
-      });
-    } else {
-      toast.error('Book not found');
-      navigate('/dashboard/books');
-    }
+  //   if (book) {
+  //     setFormData({
+  //       Title: book.Title,
+  //       ISBN: book.ISBN,
+  //       Author: book.Author as string,
+  //       Category: book.Category,
+  //       Price: book.Price.toString(),
+  //       StockQuantity: book.StockQuantity.toString(),
+  //       PublishedYear: book.PublishedYear.toString(),
+  //       Description: book.Description,
+  //       ImageUrl: book.ImageUrl,
+  //     });
+  //   } else {
+  //     toast.error('Book not found');
+  //     // navigate('/dashboard/books');
+  //   }
     
-    setLoading(false);
-  }, [id, navigate]);
+  // }, [id, navigate]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -75,9 +79,7 @@ const EditBook: React.FC = () => {
     navigate('/dashboard/books');
   };
 
-  if (loading) {
-    return <div className="text-center py-10">Loading...</div>;
-  }
+  if (isLoading) return <LoadingPage></LoadingPage>;
 
   return (
     <div className="space-y-6">
