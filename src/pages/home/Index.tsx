@@ -1,21 +1,15 @@
-import CustomerReview from "../../components/CustomerReview";
-import NewsLater from "../../components/NewsLater";
 import WhyUs from "../../components/WhyUs";
 import { useGetBookQuery } from "../../redux/features/books/bookApi";
-import { useInitPaymentMutation } from "../../redux/features/payment/paymentApi";
-
-
 import LoadingPage from "../LoadingPage";
 import Banner from "./Banner";
 import BookSwiper from "./BookSwiper";
-import axios from "axios";
 import Hero from "./Hero";
 import WhyBookNest from "./WhyBookNest";
+import HowItWorks from "./HowItWorks";
 // import Testimonial from "./Testimonial";
 
 const Index = () => {
   const { isLoading, currentData } = useGetBookQuery('');
-  const [initPayment] = useInitPaymentMutation();
 
   if(isLoading) return <LoadingPage></LoadingPage>
   const { data } = currentData;
@@ -29,6 +23,7 @@ const Index = () => {
         <div className="">
           <Hero></Hero>
           <WhyBookNest></WhyBookNest>
+          <HowItWorks></HowItWorks>
         <Banner></Banner>
       </div>
         <div className="w-[80%] mx-auto">
@@ -36,9 +31,7 @@ const Index = () => {
         <BookSwiper data={data} title="Top Rated Books" types="topRated" key={'top'}></BookSwiper>
           <BookSwiper data={data} title="" types="limitedOffer" key={'offer'}></BookSwiper>
           <WhyUs></WhyUs>
-          {/* <Testimonial></Testimonial> */}
-          <CustomerReview></CustomerReview>
-          <NewsLater></NewsLater>
+
       </div>
         </div>
     );
