@@ -6,7 +6,6 @@ import DataTable from '../../../components/dashboard/DataTable';
 import { toast } from 'sonner';
 import { useDeleteBookMutation, useGetBookQuery } from '../../../redux/features/books/bookApi';
 import LoadingPage from '../../LoadingPage';
-import { confirmAlert } from 'react-confirm-alert';
 import { showConfirm } from '../../../components/ui/Confirm Modal/ConfirmDialog';
 
 

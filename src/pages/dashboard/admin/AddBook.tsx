@@ -229,7 +229,7 @@ const AddBook: React.FC = () => {
         </div>
 
         <div className="flex justify-end space-x-4">
-          <Link to="/dashboard/books">
+          <Link to={`/dashboard/${user?.user?.UserType}/books`}>
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}

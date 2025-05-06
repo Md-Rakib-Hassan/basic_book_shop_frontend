@@ -10,7 +10,7 @@ import { Toaster } from "sonner";
 const App = () => {
   
   return (
-    <div className="">
+    <div className="min-h-screen bg-gradient-to-b from-primary-100 to-gray-50">
       <Toaster richColors position="top-right" />
       <Nav></Nav>
       <Outlet></Outlet>

@@ -32,7 +32,7 @@ const DashboardLayout = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 bg-gray-600 bg-opacity-50 z-20 lg:hidden"
+              className="fixed inset-0 bg-gray-600 bg-opacity-20 z-20 lg:hidden"
               onClick={toggleSidebar}
             />
             <motion.div

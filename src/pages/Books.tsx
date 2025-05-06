@@ -35,7 +35,7 @@ const Books = () => {
   }, [selectedCategory]);
 
   return (
-    <div className="flex flex-col lg:flex-row gap-8 px-6 py-10 bg-gradient-to-tr from-gray-50 via-white to-gray-100 min-h-screen">
+    <div className="flex flex-col lg:flex-row gap-8 px-6 py-10  min-h-screen  bg-gradient-to-b from-primary-100 to-gray-50">
       {/* Sidebar */}
       <aside className="lg:w-1/5 w-full bg-white/80 backdrop-blur-md shadow-xl border border-gray-200 rounded-2xl p-6 space-y-6">
         <h2 className="text-xl font-semibold text-gray-800">🔍 Filters</h2>
@@ -112,7 +112,7 @@ const Books = () => {
               currentData.data.map((book) => (
                 <div
                   key={book._id}
-                  className="bg-white   transition transform hover:-translate-y-1 duration-200"
+                  className="  transition transform hover:-translate-y-1 duration-200"
                 >
                   <BookCard book={book} types="topRated" />
                 </div>

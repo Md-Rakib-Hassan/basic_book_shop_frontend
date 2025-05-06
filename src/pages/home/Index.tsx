@@ -9,6 +9,7 @@ import LoadingPage from "../LoadingPage";
 import Banner from "./Banner";
 import BookSwiper from "./BookSwiper";
 import axios from "axios";
+import Hero from "./Hero";
 // import Testimonial from "./Testimonial";
 
 const Index = () => {
@@ -24,7 +25,8 @@ const Index = () => {
 
     return (
         <div>
-            <div className="">
+        <div className="">
+          <Hero></Hero>
         <Banner></Banner>
       </div>
         <div className="w-[80%] mx-auto">
