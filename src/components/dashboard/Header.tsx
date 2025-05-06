@@ -19,20 +19,8 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
         <Menu size={24} />
       </button>
 
-      <div className="flex-1 flex">
-        <div className="relative w-full max-w-xs">
-          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-            <Search size={18} className="text-gray-400" />
-          </div>
-          <input
-            type="text"
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-            placeholder="Search..."
-          />
-        </div>
-      </div>
-
-      <div className="flex items-center gap-4">
+ 
+      <div className="flex items-center justify-end w-screen gap-4">
         {/* <motion.button 
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}

@@ -12,6 +12,7 @@ import './css/SwiperCustom.css'
 
 // import required modules
 import {Navigation } from 'swiper/modules';
+import { Link } from 'react-router';
 interface IBookSwiper{
     title: string;
     types: "bestSeller" | "topRated" | "limitedOffer";
@@ -24,8 +25,10 @@ const BookSwiper:FC<IBookSwiper> = ({title,types,data:books}) => {
     return (
         <div className='mt-6'>
             <div className='flex items-center justify-between py-6'>
-                <p className='font-semibold'>{title }</p>
+                <p className='font-semibold'>{title}</p>
+                <Link to={`/books`} className='flex items-center gap-2'>
                 <p className='font-medium text-primary text-sm'>View All</p>
+                    </Link>
             </div>
             <div>
                 <Swiper

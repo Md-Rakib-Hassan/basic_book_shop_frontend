@@ -1,6 +1,7 @@
 import React from 'react';
 import { ChevronRight, BookOpen, Users, Heart } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router';
 
 const Hero: React.FC = () => {
   return (
@@ -23,13 +24,16 @@ const Hero: React.FC = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 mb-12">
-              <button className="btn btn-primary px-6 py-3 text-lg">
+                          <Link to={"/auth/signup"}>
+                          <button className="btn btn-primary px-6 py-3 text-lg">
                 Get Started Free
                 <ChevronRight size={20} />
-              </button>
+                              </button></Link>
+                          <a href={"#how-it-works"}>
               <button className="btn btn-secondary px-6 py-3 text-lg">
                 How It Works
               </button>
+                          </a>
             </div>
             
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">

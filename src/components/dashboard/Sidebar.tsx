@@ -9,7 +9,8 @@ import {
   Book, 
   User, 
   Lock,
-  LogOut
+  LogOut,
+  PlusCircle
 } from 'lucide-react';
 import { logOut } from '../../redux/features/auth/authSlice';
 import { useAppDispatch } from '../../redux/hooks';
@@ -72,6 +73,13 @@ const Sidebar: React.FC<SidebarProps> = ({ userRole }) => {
               >
                 <Users size={20} />
                 <span>Manage Users</span>
+              </NavLink>
+              <NavLink
+                to="/dashboard/books/add"
+                className={({ isActive }) => `${linkClass} ${isActive ? activeLinkClass : ''}`}
+              >
+                <PlusCircle size={20} />
+                <span>Add Books</span>
               </NavLink>
 
               <NavLink

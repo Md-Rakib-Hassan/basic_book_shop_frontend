@@ -1,6 +1,7 @@
 import React from 'react';
-import { UserPlus, Search, BookOpen, RefreshCw } from 'lucide-react';
+import { UserPlus, Search, BookOpen, RefreshCw, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router';
 
 interface StepProps {
   icon: React.ReactNode;
@@ -19,7 +20,7 @@ const Step: React.FC<StepProps> = ({ icon, title, description, number }) => {
       viewport={{ once: true }}
     >
       <div className="relative mb-4">
-        <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center text-primary-600 text-xl">
+        <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center text-primary-600 text-xl border-[3px] border-primary-200">
           {icon}
         </div>
         <div className="absolute -top-2 -right-2 w-8 h-8 bg-highlight rounded-full flex items-center justify-center text-primary-900 font-bold text-sm shadow-sm">
@@ -83,16 +84,18 @@ const HowItWorks: React.FC = () => {
         </motion.p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 relative">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 relative">
+              {/* Connecting lines between steps (visible only on desktop) */}
+        <div className="hidden lg:block absolute top-8 left-[10%] right-[10%] h-0.5 bg-primary-200">
+                  <div className="absolute left-1/6 -top-[550%] text-primary-200"><ChevronRight size={24} /></div>
+                  <div className="absolute right-1/6 -top-[550%] text-primary-200"><ChevronRight size={24}/></div>
+                  <div className="absolute right-1/2 -top-[550%] text-primary-200"><ChevronRight size={24}/></div>
+        </div>
         {steps.map((step, i) => (
           <Step key={i} {...step} />
         ))}
         
-        {/* Connecting lines between steps (visible only on desktop) */}
-        <div className="hidden lg:block absolute top-8 left-[25%] right-[25%] h-0.5 bg-primary-200">
-          <div className="absolute left-1/3 w-0.5 h-2 bg-primary-200"></div>
-          <div className="absolute right-1/3 w-0.5 h-2 bg-primary-200"></div>
-        </div>
+        
       </div>
       
       <motion.div 
@@ -102,9 +105,10 @@ const HowItWorks: React.FC = () => {
         transition={{ duration: 0.5, delay: 0.6 }}
         viewport={{ once: true }}
       >
-        <button className="btn btn-primary px-6 py-3">
+              <Link to={"/auth/login"}>
+              <button className="btn btn-primary px-6 py-3">
           Start Sharing Books Today
-        </button>
+        </button></Link>
       </motion.div>
     </section>
   );

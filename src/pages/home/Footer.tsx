@@ -1,72 +1,106 @@
 import React from 'react';
-import { FaFacebookF, FaTwitter, FaGooglePlusG } from 'react-icons/fa';
-import { GiBlackBook } from 'react-icons/gi';
+import { Facebook, Twitter, Instagram, Book, Mail, Phone, MapPin } from 'lucide-react';
 
-const Footer = () => {
+const Footer: React.FC = () => {
   return (
-    <footer className="bg-primary text-white pt-10 mt-10  z-20">
-      <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-10 ">
+    <footer className="bg-primary-900 text-white pt-16 pb-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+          <div>
+            <div className="flex items-center mb-4">
+              <Book className="h-8 w-8 text-highlight" />
+              <span className="ml-2 text-2xl font-bold">BookNest</span>
+            </div>
+            <p className="text-primary-200 mb-6">
+              Building a community of book lovers, one shared story at a time.
+            </p>
+            <div className="flex space-x-4">
+              <a href="#" className="text-primary-200 hover:text-white transition-colors">
+                <Facebook size={20} />
+              </a>
+              <a href="#" className="text-primary-200 hover:text-white transition-colors">
+                <Twitter size={20} />
+              </a>
+              <a href="#" className="text-primary-200 hover:text-white transition-colors">
+                <Instagram size={20} />
+              </a>
+            </div>
+          </div>
+          
+          <div>
+            <h3 className="text-lg font-bold mb-4">Quick Links</h3>
+            <ul className="space-y-2">
+              {['Home', 'About Us', 'Features', 'How It Works', 'Pricing', 'FAQ', 'Contact', 'Blogs'].map((item) => (
+                <li key={item}>
+                  <a 
+                    href={`#${item.toLowerCase().replace(/\s+/g, '-')}`}
+                    className="text-primary-200 hover:text-white transition-colors"
+                  >
+                    {item}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+          
+          <div>
+            <h3 className="text-lg font-bold mb-4">Categories</h3>
+            <ul className="space-y-2">
+              {['Fiction', 'Mystery & Thriller', 'Science Fiction', 'Biography', 'Self-Help', 'Romance', 'Fantasy', 'Non-Fiction'].map((item) => (
+                <li key={item}>
+                  <a 
+                    href="#"
+                    className="text-primary-200 hover:text-white transition-colors"
+                  >
+                    {item}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+          
+          <div>
+            <h3 className="text-lg font-bold mb-4">Contact Us</h3>
+            <ul className="space-y-4">
+              <li className="flex items-start gap-3">
+                <MapPin className="w-5 h-5 text-primary-200 flex-shrink-0 mt-0.5" />
+                <span className="text-primary-200">
+                  123 Reading Lane<br />
+                  Bookville, BK 12345
+                </span>
+              </li>
+              <li className="flex items-center gap-3">
+                <Phone className="w-5 h-5 text-primary-200" />
+                <a href="tel:+1234567890" className="text-primary-200 hover:text-white transition-colors">
+                  (123) 456-7890
+                </a>
+              </li>
+              <li className="flex items-center gap-3">
+                <Mail className="w-5 h-5 text-primary-200" />
+                <a href="mailto:info@booknest.com" className="text-primary-200 hover:text-white transition-colors">
+                  info@booknest.com
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
         
-        {/* Bookshop Intro */}
-        <div>
-          <div className="flex items-center space-x-1 mb-4">
-            
-              <GiBlackBook className="text-white text-lg" />
-            
-            <span className="font-bold text-xl">BOOKNEST</span>
-          </div>
-          <p className="text-sm leading-relaxed">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore.
+        <div className="border-t border-primary-800 pt-6 flex flex-col md:flex-row justify-between items-center">
+          <p className="text-primary-300 text-sm">
+            &copy; {new Date().getFullYear()} BookNest. All rights reserved.
           </p>
-          <a href="#" className="mt-4 inline-block text-sm text-white underline">
-            Learn More About Us
-          </a>
-        </div>
-
-        {/* Main Office */}
-        <div>
-          <h3 className="font-semibold text-lg mb-3">OUR MAIN OFFICE</h3>
-          <p className="text-sm">
-            San Francisco, California, US<br />
-            P.O. BOX: 553204<br />
-            Phone: (+1) 998 3384<br />
-            Mail: <a href="mailto:admin@bookshop.com" className="underline">admin@bookshop.com</a>
-          </p>
-        </div>
-
-        {/* Social Media */}
-        <div>
-          <h3 className="font-semibold text-lg mb-3">KEEP IN TOUCH WITH US</h3>
-          <ul className="space-y-2 text-sm">
-            <li className="flex items-center space-x-2">
-              <FaFacebookF /> <a href="#" className="hover:underline">Facebook</a>
-            </li>
-            <li className="flex items-center space-x-2">
-              <FaTwitter /> <a href="#" className="hover:underline">Twitter</a>
-            </li>
-            <li className="flex items-center space-x-2">
-              <FaGooglePlusG /> <a href="#" className="hover:underline">Google Plus</a>
-            </li>
-          </ul>
-        </div>
-
-        {/* Information Links */}
-        <div>
-          <h3 className="font-semibold text-lg mb-3">INFORMATIONS</h3>
-          <div className="grid grid-cols-2 gap-2 text-sm">
-            <a href="#" className="hover:underline">About Us</a>
-            <a href="#" className="hover:underline">Terms & Conditions</a>
-            <a href="#" className="hover:underline">Contact Us</a>
-            <a href="#" className="hover:underline">My Account</a>
-            <a href="#" className="hover:underline">FAQ</a>
-            <a href="#" className="hover:underline">Blog</a>
+          <div className="flex space-x-6 mt-4 md:mt-0">
+            <a href="#" className="text-primary-300 hover:text-white text-sm transition-colors">
+              Privacy Policy
+            </a>
+            <a href="#" className="text-primary-300 hover:text-white text-sm transition-colors">
+              Terms of Service
+            </a>
+            <a href="#" className="text-primary-300 hover:text-white text-sm transition-colors">
+              Cookie Policy
+            </a>
           </div>
         </div>
-      </div>
-
-      {/* Bottom Bar */}
-      <div className="  py-3 mt-4 text-center text-sm bg-primary-700">
-        © 2016 Bookshop Pty Ltd. ALL RIGHTS RESERVED
       </div>
     </footer>
   );
