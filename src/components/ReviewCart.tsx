@@ -22,7 +22,7 @@ const ReviewCart = (props: TBookReviewProps) => {
 
   const formattedDate = formatDate(ReviewDate);
   return (
-    <div className="flex  gap-4 mt-4 p-4  shadow-[0px_0px_8px_rgba(0,0,0,0.1)] rounded-md border-gray-100">
+    <div className="flex  gap-4 mt-4 p-4  shadow-[0px_0px_8px_rgba(0,0,0,0.1)] rounded-md border-gray-100 mb-10">
     <div className="h-14 w-14 rounded-full overflow-hidden border-2 border-primary flex-shrink-0">
       <img
         src={UserId.ProfileImage}

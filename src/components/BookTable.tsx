@@ -8,13 +8,13 @@ type TBookProps = {
 const BookTable = (props: TBookProps) => {
     const { bookDetails } = props;
     const { Title, Author,  Category,  StockQuantity, ISBN, PublishedYear } = bookDetails?.data ?? {};
-    const tdClass = "px-4 py-2 border border-gray-100 w-[70%]";
-    const thClass = "px-6 py-2 w-fit  border border-gray-100 font-semibold bg-gray-50";
+    const tdClass = "px-4 py-2 border border-gray-200 w-[70%]";
+    const thClass = "px-6 py-2 w-fit  border border-gray-200 font-semibold bg-primary-100";
     return (
         <div className='mt-10 text-gray-500'>
             <table className='border-collapse w-full text-left border border-gray-100  overflow-hidden'>
                 
-                <tbody>
+                <tbody className=''>
                     <tr className="hover:bg-gray-50">
                         <th className={`${thClass} `}>Book Title</th>
                         <td className={`${tdClass}`}>{Title}</td>

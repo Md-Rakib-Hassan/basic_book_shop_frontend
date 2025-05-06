@@ -31,13 +31,13 @@ const Stats: React.FC = () => {
   const stats = [
     {
       icon: <Book size={32} />,
-      value: "50,000+",
+      value: "11+",
       label: "Books Shared",
       delay: 0.1
     },
     {
       icon: <Users size={32} />,
-      value: "12,000+",
+      value: "20+",
       label: "Active Members",
       delay: 0.3
     },
@@ -49,7 +49,7 @@ const Stats: React.FC = () => {
     },
     {
       icon: <Map size={32} />,
-      value: "120+",
+      value: "1",
       label: "Cities Covered",
       delay: 0.7
     }

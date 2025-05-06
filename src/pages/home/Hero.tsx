@@ -36,7 +36,7 @@ const Hero: React.FC = () => {
                           </a>
             </div>
             
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+            {/* <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
               <div className="flex -space-x-4">
                 {[1, 2, 3, 4].map((i) => (
                   <div 
@@ -51,7 +51,7 @@ const Hero: React.FC = () => {
                 <div className="text-sm text-gray-600">Trusted by</div>
                 <div className="font-bold text-primary-900">10,000+ book lovers</div>
               </div>
-            </div>
+            </div> */}
           </motion.div>
           
           <motion.div
@@ -75,7 +75,7 @@ const Hero: React.FC = () => {
             >
               <BookOpen className="text-primary-600" />
               <div>
-                <div className="font-bold text-primary-900">50,000+</div>
+                <div className="font-bold text-primary-900">11+</div>
                 <div className="text-xs text-gray-600">Books shared</div>
               </div>
             </motion.div>
@@ -87,7 +87,7 @@ const Hero: React.FC = () => {
             >
               <Users className="text-primary-600" />
               <div>
-                <div className="font-bold text-primary-900">1,200+</div>
+                <div className="font-bold text-primary-900">20+</div>
                 <div className="text-xs text-gray-600">Active readers</div>
               </div>
             </motion.div>
