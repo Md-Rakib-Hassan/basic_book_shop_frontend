@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 
 const Hero: React.FC = () => {
   return (
-    <section id="home" className="pt-28 pb-16 md:pt-32 md:pb-24 overflow-hidden">
+    <section id="home" className="pt-28 pb-16 md:pt-10 md:pb-24 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <motion.div
