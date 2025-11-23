@@ -3,9 +3,9 @@ import { ChevronRight, BookOpen, Users, Heart } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router';
 
-const Hero: React.FC = () => {
+const Hero= ({userCount,bookCount}) => {
   return (
-    <section id="home" className="pt-28 pb-16 md:pt-10 md:pb-24 overflow-hidden">
+    <section id="home" className="pt-28 pb-16 md:pt-10 md:pb-24 overflow-hidden bg-gradient-to-b  from-gray-50 to-primary-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <motion.div
@@ -75,7 +75,7 @@ const Hero: React.FC = () => {
             >
               <BookOpen className="text-primary-600" />
               <div>
-                <div className="font-bold text-primary-900">11+</div>
+                <div className="font-bold text-primary-900">{bookCount}+</div>
                 <div className="text-xs text-gray-600">Books shared</div>
               </div>
             </motion.div>
@@ -87,7 +87,7 @@ const Hero: React.FC = () => {
             >
               <Users className="text-primary-600" />
               <div>
-                <div className="font-bold text-primary-900">20+</div>
+                <div className="font-bold text-primary-900">{userCount }+</div>
                 <div className="text-xs text-gray-600">Active readers</div>
               </div>
             </motion.div>

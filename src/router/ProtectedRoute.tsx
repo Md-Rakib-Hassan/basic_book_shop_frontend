@@ -7,7 +7,7 @@ const ProtectedRoute = ({ children }: { children: ReactNode }) => {
     const navigate = useNavigate();
     console.log(user);
     if (user?.isLoading) {
-        return <div>Loading...</div>;
+        return 
     }
 
     if (!user?.user) {

@@ -156,7 +156,6 @@ export const orders: Order[] = [
   }
 ];
 
-// For demo authentication - in a real app, passwords would be hashed
 export const userCredentials = [
   {
     email: 'admin@bookshop.com',
@@ -167,5 +166,42 @@ export const userCredentials = [
     email: 'john@example.com',
     password: 'john123',
     userId: '2'
+  }
+];
+
+
+
+export const mockPickupPoints: PickupPoint[] = [
+  {
+    id: '1',
+    name: 'Central Library',
+    address: '123 Main St, Downtown',
+    latitude: 40.7128,
+    longitude: -74.0060,
+    distance: 0.8
+  },
+  {
+    id: '2',
+    name: 'Coffee Corner Café',
+    address: '456 Oak Ave, Midtown',
+    latitude: 40.7589,
+    longitude: -73.9851,
+    distance: 2.1
+  },
+  {
+    id: '3',
+    name: 'University Bookstore',
+    address: '789 College Rd, Campus',
+    latitude: 40.7282,
+    longitude: -73.9942,
+    distance: 1.5
+  },
+  {
+    id: '4',
+    name: 'Park Entrance',
+    address: '321 Green Park Dr',
+    latitude: 40.7691,
+    longitude: -73.9773,
+    distance: 3.2
   }
 ];

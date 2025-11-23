@@ -17,7 +17,7 @@ const Banner = () => {
 
   const { currentData, isLoading, isError, error } = useGetBookQuery(undefined);
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div></div>;
   }
   
     return (
@@ -44,7 +44,7 @@ const Banner = () => {
                       currentData?.data.map(book => (
                         <SwiperSlide key={`slide-${book._id}`}>
                             <div
-                            className="h-full pl-10 flex md:items-center md:justify-start  relative z-0"
+                            className="h-full pl-10 flex md:items-center md:justify-start  relative z-0 "
                             style={{
                               backgroundImage: `url(${book?.ImageUrl})`,
                               backgroundSize: 'cover',

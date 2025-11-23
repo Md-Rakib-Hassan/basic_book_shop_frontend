@@ -1,6 +1,27 @@
-import React from 'react';
+import React, { useState } from "react";
+import { useSendMessageMutation } from "../redux/features/contact/contactApi";
+import { toast } from "sonner";
+// make sure you installed sooner: npm i sooner
 
 const ContactUs: React.FC = () => {
+  const [formData, setFormData] = useState({ name: "", email: "", message: "" });
+  const [sendMessage, { isLoading }] = useSendMessageMutation();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await sendMessage(formData).unwrap();
+      toast.success("Message sent successfully!");
+      setFormData({ name: "", email: "", message: "" });
+    } catch (err: any) {
+      toast.error(err?.data?.message || "Failed to send message");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white text-gray-800 px-6 py-10">
       <div className="max-w-4xl mx-auto">
@@ -12,17 +33,23 @@ const ContactUs: React.FC = () => {
 
         <div className="grid md:grid-cols-2 gap-8">
           <div>
-            <img src="./images/contactUs.jpg" alt="" />
+            <img src="./images/contactUs.jpg" alt="Contact Us" />
           </div>
 
-          <form className="space-y-5 bg-gray-50 p-6 rounded-xl shadow-sm">
+          <form
+            onSubmit={handleSubmit}
+            className="space-y-5 bg-gray-50 p-6 rounded-xl shadow-sm"
+          >
             <div>
               <label htmlFor="name" className="block font-medium mb-1">Name</label>
               <input
                 type="text"
                 id="name"
+                value={formData.name}
+                onChange={handleChange}
                 className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1b8bcb]"
                 placeholder="Your Name"
+                required
               />
             </div>
 
@@ -31,8 +58,11 @@ const ContactUs: React.FC = () => {
               <input
                 type="email"
                 id="email"
+                value={formData.email}
+                onChange={handleChange}
                 className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1b8bcb]"
                 placeholder="you@example.com"
+                required
               />
             </div>
 
@@ -41,21 +71,23 @@ const ContactUs: React.FC = () => {
               <textarea
                 id="message"
                 rows={4}
+                value={formData.message}
+                onChange={handleChange}
                 className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1b8bcb]"
                 placeholder="Your message..."
+                required
               ></textarea>
             </div>
 
             <button
               type="submit"
-              className="w-full bg-[#1b8bcb] text-white py-2 rounded-lg font-semibold hover:bg-[#167ab0] transition duration-300"
+              disabled={isLoading}
+              className="w-full bg-[#1b8bcb] text-white py-2 rounded-lg font-semibold hover:bg-[#167ab0] transition duration-300 disabled:opacity-50"
             >
-              Send Message
+              {isLoading ? "Sending..." : "Send Message"}
             </button>
           </form>
         </div>
-
-    
       </div>
     </div>
   );

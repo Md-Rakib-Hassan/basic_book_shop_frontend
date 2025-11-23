@@ -66,13 +66,13 @@ const Footer: React.FC = () => {
                 <MapPin className="w-5 h-5 text-primary-200 flex-shrink-0 mt-0.5" />
                 <span className="text-primary-200">
                   123 Reading Lane<br />
-                  Bookville, BK 12345
+                  Savar, Dhaka 1341
                 </span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="w-5 h-5 text-primary-200" />
-                <a href="tel:+1234567890" className="text-primary-200 hover:text-white transition-colors">
-                  (123) 456-7890
+                <a href="tel:+8801957628489" className="text-primary-200 hover:text-white transition-colors">
+                  (+880) 1576-28489
                 </a>
               </li>
               <li className="flex items-center gap-3">

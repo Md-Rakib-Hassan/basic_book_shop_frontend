@@ -1,130 +1,195 @@
-import React, { useEffect, useState } from 'react';
-import LoadingPage from './LoadingPage';
-import { useGetBookQuery } from '../redux/features/books/bookApi';
-import BookCard from '../components/BookCard';
+import React, { useEffect, useMemo, useState } from "react";
+import { Search, Filter, MapPin } from "lucide-react";
+import { useGetBookQuery } from "../redux/features/books/bookApi";
+import BookCard from "../components/BookCard";
+import { distanceKm } from "../utils/DistanceKm";
+import { useUserLocation } from "../context/UserLocationContext";
+import LoadingPage from "./LoadingPage";
 
-const categories = ['Fiction', 'Fantasy', 'Horror', 'Mystery', 'Biography', 'Technology'];
-const sortOptions = [
-  { label: 'Default', value: '' },
-  { label: 'Price: Low to High', value: 'priceLowHigh' },
-  { label: 'Price: High to Low', value: 'priceHighLow' },
-  { label: 'Latest', value: 'latest' },
-  { label: 'Top Rated', value: 'rating' },
-];
+export default function Books() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showFilters, setShowFilters] = useState(false);
+  const [category, setCategory] = useState("");
+  const [condition, setCondition] = useState("");
+  const [availability, setAvailability] = useState("");
+  const [distance, setDistance] = useState(30);
+  const [sortBy, setSortBy] = useState("nearest");
+  const { lat, lng } = useUserLocation();
 
-const Books = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [sortBy, setSortBy] = useState('');
+  const { isLoading, currentData } = useGetBookQuery([
+    { name: "searchTerm", value: searchTerm },
+    { name: "category", value: category },
+    { name: "sort", value: sortBy },
+  ]);
 
-  const params = [];
-  if (searchTerm) params.push({ name: 'searchTerm', value: searchTerm });
-  if (selectedCategory) params.push({ name: 'category', value: selectedCategory });
-  if (sortBy) params.push({ name: 'sort', value: sortBy });
+  
 
-  const { isLoading, currentData } = useGetBookQuery(params);
+  
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    const input = e.target.search.value.trim();
-    setSearchTerm(input);
-  };
+  const booksWithDistance = useMemo(() => {
+    const list = currentData?.data || [];
+    return list.map((b) => ({
+      ...b,
+      _distanceKm:
+        lat != null && lng != null
+          ? distanceKm(
+              lat,
+              lng,
+              b.PickupPoint?.Latitude,
+              b.PickupPoint?.Longitude
+            )
+          : null,
+    }));
+  }, [currentData, lat,lng]);
 
-  useEffect(() => {
-    setSearchTerm('');
-  }, [selectedCategory]);
+  const filteredBooks = useMemo(() => {
+    let list = booksWithDistance;
+    if (category) list = list.filter((b) => b.Category === category);
+    if (condition) list = list.filter((b) => b.Condition === condition);
+    if (availability) list = list.filter((b) => b.Availability === availability);
+    if (distance)
+      list = list.filter((b) => b._distanceKm != null && b._distanceKm <= distance);
+
+    list = [...list].sort((a, b) => {
+      if (sortBy === "priceLowHigh") return a.Price - b.Price;
+      if (sortBy === "priceHighLow") return b.Price - a.Price;
+      if (sortBy === "rating") return (b.Rating || 0) - (a.Rating || 0);
+      if (sortBy === "nearest") return (a._distanceKm || Infinity) - (b._distanceKm || Infinity);
+      return 0;
+    });
+
+    return list;
+  }, [booksWithDistance, category, condition, availability, distance, sortBy]);
+
+  if (isLoading) return <LoadingPage></LoadingPage>;
+
+  const categories = Array.from(
+    new Set(currentData?.data?.map((b) => b.Category).filter(Boolean))
+  );
 
   return (
-    <div className="flex flex-col lg:flex-row gap-8 px-6 py-10  min-h-screen  bg-gradient-to-b from-primary-100 to-gray-50">
-      {/* Sidebar */}
-      <aside className="lg:w-1/5 w-full bg-white/80 backdrop-blur-md shadow-xl border border-gray-200 rounded-2xl p-6 space-y-6">
-        <h2 className="text-xl font-semibold text-gray-800">🔍 Filters</h2>
-
-        {/* Search */}
-        <form onSubmit={handleSearch} className="space-y-2">
-          <label className="text-sm font-medium text-gray-600">Search Books</label>
-          <div className="flex rounded-lg overflow-hidden shadow-sm">
-            <input
-              name="search"
-              type="text"
-              placeholder="Type title or author..."
-              className="flex-1 px-3 py-2 border border-gray-300 focus:outline-none"
-            />
-            <button
-              type="submit"
-              className="bg-blue-600 text-white px-4 py-2 hover:bg-blue-700 transition"
-            >
-              Go
-            </button>
-          </div>
-        </form>
-
-        {/* Category Filter */}
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      {/* Header & Search */}
+      <div className="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <label className="text-sm font-medium text-gray-600">Categories</label>
-          <div className="mt-2 flex flex-col gap-2 text-sm">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setSelectedCategory(cat)}
-                className={`text-left px-3 py-2 rounded-lg transition ${
-                  selectedCategory === cat
-                    ? 'bg-blue-100 text-blue-700 font-semibold'
-                    : 'hover:bg-gray-100 text-gray-600'
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
-            <button
-              onClick={() => setSelectedCategory('')}
-              className="text-xs mt-2 text-blue-500 hover:underline"
-            >
-              Clear Category
-            </button>
-          </div>
+          <h1 className="text-3xl font-bold text-gray-900">Discover Books Near You</h1>
+          <p className="text-gray-600">Find books to borrow or buy from your local community</p>
         </div>
-
-        {/* Sort Dropdown */}
-        <div>
-          <label className="text-sm font-medium text-gray-600">Sort By</label>
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="w-full mt-2 px-3 py-2 border rounded-lg focus:outline-none bg-white"
+        <div className="flex gap-2 items-center">
+          <input
+            type="text"
+            placeholder="Search books..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="px-4 py-2 border rounded-lg w-64"
+          />
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className="flex items-center gap-1 px-3 py-2 border rounded-lg"
           >
-            {sortOptions.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
+            <Filter className="w-4 h-4" /> Filters
+          </button>
         </div>
-      </aside>
+      </div>
 
-      {/* Book Display */}
-      <main className="lg:w-4/5 w-full">
-        {isLoading ? (
-          <LoadingPage />
-        ) : (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {currentData?.data?.length ? (
-              currentData.data.map((book) => (
-                <div
-                  key={book._id}
-                  className="  transition transform hover:-translate-y-1 duration-200"
-                >
-                  <BookCard book={book} types="topRated" />
-                </div>
-              ))
-            ) : (
-              <p className="text-gray-500 col-span-full text-center">No books found.</p>
-            )}
+      {/* Filters */}
+      {showFilters && (
+        <div className="mb-6 p-4 bg-white rounded-xl border border-gray-200 shadow-sm transition-all duration-300">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+            {/* Category */}
+            <div>
+              <label className="text-sm font-medium text-gray-700">Category</label>
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="w-full px-3 py-2 border rounded-lg"
+              >
+                <option value="">All</option>
+                {categories.map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </select>
+            </div>
+            {/* Condition */}
+            <div>
+              <label className="text-sm font-medium text-gray-700">Condition</label>
+              <select
+                value={condition}
+                onChange={(e) => setCondition(e.target.value)}
+                className="w-full px-3 py-2 border rounded-lg"
+              >
+                <option value="">Any</option>
+                <option value="New">New</option>
+                <option value="Used">Used</option>
+              </select>
+            </div>
+            {/* Availability */}
+            <div>
+              <label className="text-sm font-medium text-gray-700">Availability For</label>
+              <select
+                value={availability}
+                onChange={(e) => setAvailability(e.target.value)}
+                className="w-full px-3 py-2 border rounded-lg"
+              >
+                <option value="">All</option>
+                <option value="Sell">Buy</option>
+                <option value="Lend">Borrow</option>
+              </select>
+            </div>
+
+            {/* Sort */}
+            <div>
+              <label className="text-sm font-medium text-gray-700">Sort By</label>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="w-full px-3 py-2 border rounded-lg"
+              >
+                <option value="nearest">Nearest</option>
+                <option value="priceLowHigh">Price: Low to High</option>
+                <option value="priceHighLow">Price: High to Low</option>
+                <option value="rating">Top Rated</option>
+                <option value="latest">Latest</option>
+              </select>
+            </div>
+
+            {/* Distance slider */}
+            <div>
+              <label className="text-sm font-medium text-gray-700">Distance (km)</label>
+              <input
+                type="range"
+                min={1}
+                max={50}
+                value={distance}
+                onChange={(e) => setDistance(Number(e.target.value))}
+                className="w-full"
+              />
+              <span className="text-sm text-gray-500">{distance} km</span>
+            </div>
+            
           </div>
+        </div>
+      )}
+
+      {/* Book Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 transition-all duration-300">
+        {filteredBooks.length ? (
+          filteredBooks.map((book) => (
+            <div
+              key={book._id}
+              className="transition-transform duration-200 hover:scale-105 hover:shadow-lg"
+            >
+              <BookCard book={book} types="topRated" />
+            </div>
+          ))
+        ) : (
+          <p className="col-span-full text-center text-gray-500">
+            No books found.
+          </p>
         )}
-      </main>
+      </div>
     </div>
   );
-};
-
-export default Books;
+}

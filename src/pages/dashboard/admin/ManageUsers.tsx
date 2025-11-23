@@ -6,6 +6,7 @@ import { IUser } from '../../../types/user';
 import { useBlockUserMutation, useGetAllUsersQuery, useUnblockUserMutation } from '../../../redux/features/user/userApi';
 import LoadingPage from '../../LoadingPage';
 import { showConfirm } from '../../../components/ui/Confirm Modal/ConfirmDialog';
+import { useNavigate } from 'react-router';
 
 const ManageUsers: React.FC = () => {
 
@@ -13,6 +14,7 @@ const ManageUsers: React.FC = () => {
   const [blockUser] = useBlockUserMutation();
   const [unblockUser] = useUnblockUserMutation();
   const [users, setUsers] = useState<IUser[]>([]);
+  const navigate = useNavigate();
   useEffect(() => {
     if (data?.data) {
       setUsers(data.data);
@@ -82,7 +84,7 @@ const ManageUsers: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-gray-900">Manage Users</h1>
         <p className="mt-1 text-sm text-gray-500">View and manage user accounts</p>
@@ -152,8 +154,7 @@ const ManageUsers: React.FC = () => {
                   whileTap={{ scale: 0.95 }}
                   className="px-3 py-1 text-xs font-medium rounded-md bg-primary-100 text-primary-700 hover:bg-primary-200"
                   onClick={() => {
-                    console.log('View user details:', user);
-                    toast.info(`Viewing details for ${user.Name}`);
+                    navigate(`/profile/${user._id}`)
                   }}
                 >
                   Details

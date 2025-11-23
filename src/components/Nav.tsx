@@ -28,12 +28,19 @@ const Nav: React.FC = () => {
     }
   };
 
+  const onProfile = () => {
+    if (fullUser?.user?._id) {
+      navigate(`/profile/${fullUser?.user?._id}`);
+    }
+  };
+
   const navLinks = [
     { name: "Home", path: "/" },
     { name: "Books", path: "/books" },
-    { name: "About Us", path: "/about" },
+    { name: "Academic Zone", path: "/academic" },
+    { name: "Free Book", path: "/freebook" },
+    // { name: "About Us", path: "/about" },
     { name: "Contact Us", path: "/contact" },
-    { name: "Blog", path: "/blog" },
     { name: "FAQ", path: "/faq" },
   ];
 
@@ -73,12 +80,13 @@ const Nav: React.FC = () => {
                 {link.name}
               </NavLink>
             ))}
-            <ShoppingCart className="w-6 h-6 text-gray-600 hover:text-primary cursor-pointer" />
+            
 
             {fullUser?.user ? (
               <ProfileAvatarMenu
                 onDashboard={goToDashboard}
                 onLogout={logout}
+                onProfile={onProfile}
                 imageUrl={fullUser.user.ProfileImage}
                 size="w-10 h-10"
               />

@@ -27,17 +27,17 @@ const StatItem: React.FC<StatProps> = ({ icon, value, label, delay }) => {
   );
 };
 
-const Stats: React.FC = () => {
+const Stats: React.FC = ({userCount,bookCount}) => {
   const stats = [
     {
       icon: <Book size={32} />,
-      value: "11+",
+      value: `${bookCount}+`,
       label: "Books Shared",
       delay: 0.1
     },
     {
       icon: <Users size={32} />,
-      value: "20+",
+      value: `${userCount}+`,
       label: "Active Members",
       delay: 0.3
     },

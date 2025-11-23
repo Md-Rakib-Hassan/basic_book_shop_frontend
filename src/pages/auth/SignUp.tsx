@@ -153,6 +153,7 @@ const SignUp: React.FC = () => {
             type="file"
             accept="image/*"
             onChange={handleImageChange}
+            required
             className="w-full px-4 py-2 border border-gray-300 rounded-lg"
           />
           <button

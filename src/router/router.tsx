@@ -18,7 +18,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import AuthLayout from "../pages/auth/AuthLayout";
 import DashboardLayout from "../components/layouts/DashboardLayout";
 import ChangePassword from "../pages/dashboard/user/ChangePassword";
-import UserProfile from "../pages/dashboard/user/UserProfile";
+import UserProfile from "../pages/home/UserProfile";
 import ManageOrders from "../pages/dashboard/admin/ManageOrders";
 import EditBook from "../pages/dashboard/admin/EditBook";
 import AddBook from "../pages/dashboard/admin/AddBook";
@@ -29,6 +29,17 @@ import UserOrders from "../pages/dashboard/user/UserOrders";
 import UserDashboard from "../pages/dashboard/user/UserDashboard";
 import PaymentSuccessPage from "../pages/PaymentSuccessPage";
 import PaymentFailedPage from "../pages/PaymentFailedPage";
+import MyBorrowRequests from "../pages/dashboard/user/MyBorrowRequests";
+import PickupPointsPage from "../pages/dashboard/user/PickupPointsPage";
+import BookPickupPage from "../pages/dashboard/user/BookPickupPage";
+import ManageIncomingRequest from "../pages/dashboard/user/ManageIncomingRequest";
+import MyBooks from "../pages/dashboard/user/MyBooks";
+import EditBookPage from "../pages/dashboard/user/EditBookPage";
+import IndivisualBookRequest from "../pages/dashboard/user/IndivisualBookRequest";
+import WalletPage from "../pages/dashboard/user/WalletPage";
+import AcademicZone from "../pages/AcademicZone";
+import FreeBook from "../pages/FreeBook";
+import AdminTransactions from "../pages/dashboard/admin/AdminTransactions";
 
 
 
@@ -46,12 +57,29 @@ import PaymentFailedPage from "../pages/PaymentFailedPage";
           element: <Index></Index>,
         },
         {
+          path: "/t",
+          element: <MyBorrowRequests></MyBorrowRequests>,
+        },
+        
+        {
           path: "/books",
           element: <Books></Books>,
         },
         {
+          path: "/academic",
+          element: <AcademicZone></AcademicZone>,
+        },
+        {
+          path: "/freebook",
+          element: <FreeBook></FreeBook>,
+        },
+        {
           path: "/books/:bookId",
           element: <Book></Book>,
+        },
+        {
+          path: "/profile/:id",
+          element: <UserProfile></UserProfile>,
         },
 
         {
@@ -103,7 +131,7 @@ import PaymentFailedPage from "../pages/PaymentFailedPage";
         {
           index: true,
           path:'admin',
-          element: <AdminDashboard  />,
+          element: <UserDashboard  />,
         },
         {
           path: "user",
@@ -118,7 +146,11 @@ import PaymentFailedPage from "../pages/PaymentFailedPage";
           element: <ManageBooks />,
         },
         {
-          path: "books/add",
+          path: "admin/transections",
+          element: <AdminTransactions />,
+        },
+        {
+          path: "addbook",
           element: <AddBook />,
         },
         {
@@ -132,6 +164,34 @@ import PaymentFailedPage from "../pages/PaymentFailedPage";
         {
           path: "user/orders",
           element: <UserOrders />,
+        },
+        {
+          path: "pickuppoints",
+          element: <PickupPointsPage />,
+        },
+        {
+          path: "myrequest",
+          element: <MyBorrowRequests />,
+        },
+        {
+          path: "managerequest",
+          element: <ManageIncomingRequest />,
+        },
+        {
+          path: "mybooks",
+          element: <MyBooks />,
+        },
+        {
+          path: "edit/:bookId",
+          element: <EditBookPage />,
+        },
+        {
+          path: "book/:bookId",
+          element: <IndivisualBookRequest />,
+        },
+        {
+          path: "wallet",
+          element: <WalletPage />,
         },
         {
           path: "profile",

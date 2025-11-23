@@ -22,7 +22,7 @@ const AdminDashboard: React.FC = () => {
       id: order._id,
       userName,
       date: order.OrderDate ? new Date(order.OrderDate).toLocaleDateString() : 'N/A',
-      amount: `$${order.Total.toFixed(2)}`,
+      amount: `৳ ${order.Total.toFixed(2)}`,
       status: order.OrderStatus,
     };
   });

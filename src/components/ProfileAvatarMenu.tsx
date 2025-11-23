@@ -16,6 +16,7 @@ const ProfileAvatarMenu = ({
   imageUrl,
   onDashboard,
   onLogout,
+  onProfile,
   size = "w-12 h-12",
 }: ProfileAvatarMenuProps) => {
   const [open, setOpen] = useState(false);
@@ -52,6 +53,16 @@ const ProfileAvatarMenu = ({
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
             className="absolute right-0 mt-2 w-44 bg-white rounded-xl shadow-xl z-50 overflow-hidden"
           >
+
+            <button
+              onClick={() => {
+                setOpen(false);
+                onProfile();
+              }}
+              className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors"
+            >
+              Profile
+            </button>
             <button
               onClick={() => {
                 setOpen(false);

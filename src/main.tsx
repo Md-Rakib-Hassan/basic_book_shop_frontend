@@ -7,16 +7,22 @@ import { RouterProvider } from 'react-router'
 import router from './router/router.tsx'
 import { PersistGate } from 'redux-persist/integration/react'
 import 'react-confirm-alert/src/react-confirm-alert.css';
+import { UserLocationProvider } from './context/UserLocationContext.tsx'
+import {  LoadScript } from "@react-google-maps/api";
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     
-    <Provider store={store}>
+    <UserLocationProvider>
+    <LoadScript googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
+      <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         
     <RouterProvider router={router} />
 
       </PersistGate>
     </Provider>
+</LoadScript>
+    </UserLocationProvider>
     
   </StrictMode>,
 )

@@ -13,7 +13,7 @@ const useImageUpload = () => {
       formData.append("upload_preset", "BookShop");
   
       const response = await axios.post(
-        "https://api.cloudinary.com/v1_1/dw74s1u8t/image/upload",
+        import.meta.env.VITE_CLOUDINARY,
         formData
       );
   

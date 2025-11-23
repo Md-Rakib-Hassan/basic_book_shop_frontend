@@ -1,0 +1,31 @@
+{
+    "success": true,
+    "message": "Pickup point retrieved successfully",
+    "statusCode": 200,
+    "data": [
+        
+        {
+            "_id": "68a4a040c385a3ef4670e2a3",
+            "Name": "Kalma",
+            "UserId": "67b70feb6e74b93bdfa5ebd3",
+            "Address": "V7CR+9GC, Bangladesh",
+            "Latitude": 23.8707302,
+            "Longitude": 90.2905779,
+            "createdAt": "2025-08-19T16:03:12.658Z",
+            "updatedAt": "2025-08-19T16:03:12.658Z",
+            "__v": 0
+        },
+        {
+            "_id": "68a4adc4c385a3ef4670e2e5",
+            "Name": "Mirpur",
+            "UserId": "67b70feb6e74b93bdfa5ebd3",
+            "Address": "Baby Park, Avenue 2, ঢাকা, Bangladesh",
+            "Latitude": 23.836543104176588,
+            "Longitude": 90.3695011138916,
+            "createdAt": "2025-08-19T17:00:52.031Z",
+            "updatedAt": "2025-08-19T17:00:52.031Z",
+            "__v": 0
+        },
+        
+    ]
+}

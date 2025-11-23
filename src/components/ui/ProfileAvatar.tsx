@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 
 interface ProfileAvatarProps {
   imageUrl: string;
-  size?: string; // optional size (default is w-24 h-24)
+  size?: string; 
 }
 
 const ProfileAvatar = ({ imageUrl, size = "w-24 h-24" }: ProfileAvatarProps) => {

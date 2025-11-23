@@ -1,4 +1,3 @@
-import { IAuthor } from "./author";
 import { IReviewSummary } from "./review";
 
 export enum Category {
@@ -7,8 +6,9 @@ export enum Category {
     SelfDevelopment = 'SelfDevelopment',
     Poetry = 'Poetry',
     Religious = 'Religious',
-  }
+}
   
+
 
 export interface SpecificBookApiResponse {
   success: boolean;

@@ -1,12 +1,32 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
-import { useFullUser } from '../../../redux/hooks/useUserByEmail';
+import { useFullUser } from '../../redux/hooks/useUserByEmail';
+import { useGetMyBooksQuery } from '../../redux/features/books/bookApi';
+import { useGetIncomingRequestQuery, useGetMyRequestQuery } from '../../redux/features/request/bookRequestApi';
+import { useGetPaymentsByUserQuery } from '../../redux/features/payment/paymentApi';
+import { useGetPickupPointsQuery, useGetSpecificPickupPointQuery } from '../../redux/features/pickup/pickupApi';
+
 
 const UserProfile: React.FC = () => {
   // Get user ID (would normally come from auth)
   const user = useFullUser();
   const userData = user.user;
+
+  const { data:mybook } = useGetMyBooksQuery(null);
+  const { data: incoming_request } = useGetIncomingRequestQuery(null) 
+  const { data: myPayment } = useGetPaymentsByUserQuery(userData._id);
+  const { data: myPickup } =useGetSpecificPickupPointQuery(userData?._id ?? "", {
+        skip: !userData?._id,
+      });
+  const { data: myBookRequest } = useGetMyRequestQuery(null);
+
+  console.log('userData',userData);
+  console.log('mybook', mybook);
+  console.log('incoming request', incoming_request);
+  console.log('myPayment', myPayment);
+  console.log('myPickup', myPickup);
+  console.log('myBookRequest', myBookRequest);
   
   const [formData, setFormData] = useState({
     Name: userData?.Name || '',
@@ -168,6 +188,7 @@ const UserProfile: React.FC = () => {
           </div>
         </div>
       </div>
+
     </div>
   );
 };

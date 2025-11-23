@@ -10,7 +10,10 @@ import {
   User, 
   Lock,
   LogOut,
-  PlusCircle
+  PlusCircle,
+  MapPin,
+  Wallet,
+  ArrowLeftRightIcon
 } from 'lucide-react';
 import { logOut } from '../../redux/features/auth/authSlice';
 import { useAppDispatch } from '../../redux/hooks';
@@ -46,8 +49,8 @@ const Sidebar: React.FC<SidebarProps> = ({ userRole }) => {
           transition={{ duration: 0.5 }}
           className="flex items-center gap-2"
         >
-          <BookOpen className="w-8 h-8 text-primary-600" />
-          <span className="text-xl font-bold text-primary-700">BookShop</span>
+          <Book className="h-8 w-8 text-primary" />
+          <span className="text-xl font-bold text-primary-700">BookNest</span>
         </motion.div></Link>
       </div>
 
@@ -74,13 +77,7 @@ const Sidebar: React.FC<SidebarProps> = ({ userRole }) => {
                 <Users size={20} />
                 <span>Manage Users</span>
               </NavLink>
-              <NavLink
-                to="/dashboard/books/add"
-                className={({ isActive }) => `${linkClass} ${isActive ? activeLinkClass : ''}`}
-              >
-                <PlusCircle size={20} />
-                <span>Add Books</span>
-              </NavLink>
+              
 
               <NavLink
                 to="/dashboard/admin/books"
@@ -90,12 +87,14 @@ const Sidebar: React.FC<SidebarProps> = ({ userRole }) => {
                 <span>Manage Books</span>
               </NavLink>
 
+              
+
               <NavLink
-                to="/dashboard/admin/orders"
+                to="/dashboard/admin/transections"
                 className={({ isActive }) => `${linkClass} ${isActive ? activeLinkClass : ''}`}
               >
-                <ShoppingCart size={20} />
-                <span>Manage Orders</span>
+                <ArrowLeftRightIcon size={20} />
+                <span>All Transections</span>
               </NavLink>
             </>
           )}
@@ -111,25 +110,64 @@ const Sidebar: React.FC<SidebarProps> = ({ userRole }) => {
             <Home size={20} />
             <span>Dashboard</span>
           </NavLink>
+          
+              
             
-            <NavLink
-              to="/dashboard/user/orders"
-              className={({ isActive }) => `${linkClass} ${isActive ? activeLinkClass : ''}`}
-              >
-              <ShoppingCart size={20} />
-              <span>My Orders</span>
-            </NavLink>
+            
               </>
           )}
 
           {/* Common account links */}
+
           <NavLink
-            to="/dashboard/profile"
-            className={({ isActive }) => `${linkClass} ${isActive ? activeLinkClass : ''}`}
-          >
-            <User size={20} />
-            <span>Profile</span>
+                to="/dashboard/addbook"
+                className={({ isActive }) => `${linkClass} ${isActive ? activeLinkClass : ''}`}
+              >
+                <PlusCircle size={20} />
+                <span>Add Book</span>
+              </NavLink>
+
+              <NavLink
+                to="/dashboard/mybooks"
+                className={({ isActive }) => `${linkClass} ${isActive ? activeLinkClass : ''}`}
+              >
+                <Book size={20} />
+                <span>My Books</span>
+              </NavLink>
+
+                <NavLink
+                to="/dashboard/myrequest"
+                className={({ isActive }) => `${linkClass} ${isActive ? activeLinkClass : ''}`}
+                >
+                <ShoppingCart size={20} />
+                <span>My Request</span>
+              </NavLink>
+              
+              <NavLink
+                to="/dashboard/managerequest"
+                className={({ isActive }) => `${linkClass} ${isActive ? activeLinkClass : ''}`}
+              >
+                <Users size={20} />
+                <span>Manage Request</span>
+              </NavLink>
+
+              <NavLink
+                to="/dashboard/pickuppoints"
+                className={({ isActive }) => `${linkClass} ${isActive ? activeLinkClass : ''}`}
+              >
+                <MapPin size={20} />
+                <span>Pick Up Points</span>
           </NavLink>
+          
+          <NavLink
+                to="/dashboard/wallet"
+                className={({ isActive }) => `${linkClass} ${isActive ? activeLinkClass : ''}`}
+              >
+                <Wallet size={20} />
+                <span>Wallet</span>
+              </NavLink>
+          
+         
 
           <NavLink
             to="/dashboard/change-password"

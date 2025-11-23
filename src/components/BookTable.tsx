@@ -7,7 +7,7 @@ type TBookProps = {
 
 const BookTable = (props: TBookProps) => {
     const { bookDetails } = props;
-    const { Title, Author,  Category,  StockQuantity, ISBN, PublishedYear } = bookDetails?.data ?? {};
+    const { Title, Author,  Category,  StockQuantity, ISBN, PublishedYear,Subject,Institution,Semester } = bookDetails?.data ?? {};
     const tdClass = "px-4 py-2 border border-gray-200 w-[70%]";
     const thClass = "px-6 py-2 w-fit  border border-gray-200 font-semibold bg-primary-100";
     return (
@@ -32,6 +32,26 @@ const BookTable = (props: TBookProps) => {
                         <th className={`${thClass}`}>Category</th>
                         <td className={`${tdClass}`}>{Category}</td>
                     </tr>
+                    {
+                        Subject&&<tr className="hover:bg-gray-50">
+                        <th className={`${thClass}`}>Subject</th>
+                        <td className={`${tdClass}`}>{Subject}</td>
+                    </tr>
+                    }
+
+                    {
+                        Institution&&<tr className="hover:bg-gray-50">
+                        <th className={`${thClass}`}>Institution</th>
+                        <td className={`${tdClass}`}>{Institution}</td>
+                    </tr>
+                    }
+
+                    {
+                        Semester&&<tr className="hover:bg-gray-50">
+                        <th className={`${thClass}`}>Semester</th>
+                        <td className={`${tdClass}`}>{Semester}</td>
+                    </tr>
+                    }
                     
                     <tr className="hover:bg-gray-50">
                         <th className={`${thClass}`}>Stock Quantity</th>

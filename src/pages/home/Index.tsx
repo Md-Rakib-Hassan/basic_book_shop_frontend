@@ -1,42 +1,54 @@
 import WhyUs from "../../components/WhyUs";
-import { useGetBookQuery } from "../../redux/features/books/bookApi";
+import { useGetAcademicBooksQuery, useGetAcademicFiltersQuery, useGetBookQuery, useGetFreeBooksQuery } from "../../redux/features/books/bookApi";
 import LoadingPage from "../LoadingPage";
 import Banner from "./Banner";
 import BookSwiper from "./BookSwiper";
 import Hero from "./Hero";
 import WhyBookNest from "./WhyBookNest";
 import HowItWorks from "./HowItWorks";
-import Testimonials from "./Testimonials";
 import Stats from "./Stats";
-import MembershipPlans from "./MembershipPlans";
 import FAQ from "./FAQ";
 import Newsletter from "./Newsletter";
+import AcademicZoneBanner from "./AcademicZoneBanner";
+import FreeBookBanner from "./FreeBookBanner";
 // import Testimonial from "./Testimonial";
 
 const Index = () => {
-  const { isLoading, currentData } = useGetBookQuery("");
+  const { isLoading, currentData } = useGetBookQuery([{name:"sort",value:"latest"}]);
+  const { isFreeBookLoading, data: freeBooks } = useGetFreeBooksQuery(null);
+  const { data: academicBook, isLoading: academic } = useGetAcademicBooksQuery(null);
+    const { currentData: insub, isLoading:insubLoading } = useGetAcademicFiltersQuery(null);
+  
 
-  if (isLoading) return <LoadingPage></LoadingPage>;
+
+  if (isLoading || isFreeBookLoading || academic||insubLoading) return <LoadingPage></LoadingPage>;
   const { data } = currentData;
+  const { userCount, bookCount } = insub?.data;
+  
+  console.log(insub);
+
+  console.log(academicBook);
 
   return (
     <div>
       <div className="">
-        <Hero></Hero>
+        <Hero userCount={userCount} bookCount={bookCount}></Hero>
+        <FreeBookBanner books={freeBooks?.data}></FreeBookBanner>
         <WhyBookNest></WhyBookNest>
+        <AcademicZoneBanner></AcademicZoneBanner>
         <HowItWorks></HowItWorks>
       </div>
       <div className="w-[80%] mx-auto mb-16">
         <BookSwiper
           data={data}
-          title="Current Bestseller"
-          types="bestSeller"
+          title="Recent Books"
+          types="books"
           key={"best1"}
         ></BookSwiper>
         <BookSwiper
-          data={data}
-          title="Top Rated Books"
-          types="topRated"
+          data={freeBooks.data}
+          title="Free Books"
+          types="freebook"
           key={"top"}
         ></BookSwiper>
         
@@ -44,15 +56,13 @@ const Index = () => {
       <Banner></Banner>
       <div className="w-[80%] mx-auto mb-10">
         <BookSwiper
-          data={data}
-          title="Limited Time Offer"
-          types="limitedOffer"
+          data={academicBook?.data}
+          title="Academic Book"
+          types="academic"
           key={"offer"}
         ></BookSwiper>
       </div>
-      <Testimonials />
-      <Stats />
-      <MembershipPlans />
+      <Stats userCount={userCount} bookCount={bookCount} />
       <FAQ />
       <Newsletter />
     </div>
