@@ -34,6 +34,7 @@ import HandoverModal from "../../../components/ManageBorrowRequests/HandoverModa
 import { showConfirm } from "../../../components/ui/Confirm Modal/ConfirmDialog";
 import BookReviewPopup from "../../../components/BookReviewPopup";
 import UserReviewPopup from "../../../components/UserReviewPopup";
+import LoadingPage from "../../LoadingPage";
 
 export default function MyBorrowRequests() {
   const [activeTab, setActiveTab] = useState<
@@ -707,7 +708,7 @@ export default function MyBorrowRequests() {
 export function PinDisplay({ requestId }: { requestId: string }) {
   const { data, isLoading, isError } = useGetPinQuery(requestId);
   console.log(data);
-  if (isLoading) return <p className="text-sm text-gray-500">Loading...</p>;
+  if (isLoading) return <LoadingPage></LoadingPage>;
 
   return (
     <>

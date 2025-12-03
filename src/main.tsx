@@ -9,11 +9,14 @@ import { PersistGate } from 'redux-persist/integration/react'
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { UserLocationProvider } from './context/UserLocationContext.tsx'
 import {  LoadScript } from "@react-google-maps/api";
+import LoadingPage from './pages/LoadingPage.tsx'
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     
     <UserLocationProvider>
-    <LoadScript googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
+      <LoadScript googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
+      loadingElement={<LoadingPage></LoadingPage>}
+      >
       <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         

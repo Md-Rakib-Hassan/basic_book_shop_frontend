@@ -25,9 +25,9 @@ const Index = () => {
   const { data } = currentData;
   const { userCount, bookCount } = insub?.data;
   
-  console.log(insub);
+  // console.log(insub);
 
-  console.log(academicBook);
+  // console.log(academicBook);
 
   return (
     <div>
